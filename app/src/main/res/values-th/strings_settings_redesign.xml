@@ -29,6 +29,10 @@
     <string name="sr_cat_sound_sub">เสียงเชื่อมต่อ · นาฬิกาบนรถ</string>
     <string name="sr_cat_advanced">ขั้นสูง</string>
     <string name="sr_cat_advanced_sub">โปรไฟล์รถ · แบตเตอรี่ · ความเป็นส่วนตัว · ส่งออก/นำเข้า</string>
+    <string name="sr_cat_language">ภาษา · Language</string>
+    <string name="sr_cat_language_sub">ไทย · English · ตามเครื่อง</string>
+    <string name="sr_lang_system">ตามภาษาของมือถือ</string>
+    <string name="sr_lang_keywords">ภาษา language ไทย อังกฤษ thai english</string>
     <string name="sr_i_permissions">สิทธิ์การใช้งาน</string>
     <string name="sr_k_permissions">permission camera location กล้อง ตำแหน่ง อนุญาต</string>
     <string name="sr_i_aa_install">ติดตั้ง Android Auto</string>

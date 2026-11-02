@@ -29,6 +29,10 @@
     <string name="sr_cat_sound_sub">Connection sounds · dash clock</string>
     <string name="sr_cat_advanced">Advanced</string>
     <string name="sr_cat_advanced_sub">Bike profile · battery · privacy · export</string>
+    <string name="sr_cat_language">Language · ภาษา</string>
+    <string name="sr_cat_language_sub">Thai · English · follow phone</string>
+    <string name="sr_lang_system">Follow phone</string>
+    <string name="sr_lang_keywords">language ภาษา thai english ไทย อังกฤษ</string>
     <string name="sr_i_permissions">Permissions</string>
     <string name="sr_k_permissions">permission camera location กล้อง ตำแหน่ง อนุญาต</string>
     <string name="sr_i_aa_install">Android Auto setup</string>

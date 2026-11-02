@@ -5,6 +5,7 @@ package dev.zanderp.opencfmoto
 internal object SettingsIndex {
     const val DASH = 1
     const val CRASH = 2
+    const val LANGUAGE = 3
 
     class Cat(val section: String, val title: Int, val sub: Int, val icon: Int, val special: Int = 0)
     class Entry(val section: String, val label: Int, val keywords: Int, val focusId: Int, val special: Int)
@@ -18,6 +19,7 @@ internal object SettingsIndex {
         Cat("trips", R.string.sr_cat_trips, R.string.sr_cat_trips_sub, R.drawable.ic_set_trips, 0),
         Cat("sound", R.string.sr_cat_sound, R.string.sr_cat_sound_sub, R.drawable.ic_set_sound, 0),
         Cat("advanced", R.string.sr_cat_advanced, R.string.sr_cat_advanced_sub, R.drawable.ic_set_advanced, 0),
+        Cat("language", R.string.sr_cat_language, R.string.sr_cat_language_sub, R.drawable.ic_set_language, LANGUAGE),
     )
 
     val entries = listOf(
@@ -60,5 +62,6 @@ internal object SettingsIndex {
         Entry("advanced", R.string.sr_i_secrets, R.string.sr_k_secrets, R.id.secrets_desc, 0),
         Entry("advanced", R.string.sr_i_share_settings, R.string.sr_k_share_settings, R.id.settings_share, 0),
         Entry("bikes", R.string.sr_i_bikes, R.string.sr_k_bikes, 0, 0),
+        Entry("language", R.string.sr_cat_language, R.string.sr_lang_keywords, 0, LANGUAGE),
     )
 }

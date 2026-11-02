@@ -151,6 +151,15 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+        <!-- Stores the in-app language choice on Android 12 and older (AppCompat per-app locales). -->
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
+        </service>
         <service
             android:name=".BikeWatchService"
             android:exported="false"

@@ -14,6 +14,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
@@ -89,8 +92,26 @@ class SettingsHubActivity : AppCompatActivity() {
         when (special) {
             SettingsIndex.DASH -> DashDesignActivity.start(this, fromSetup = true)
             SettingsIndex.CRASH -> CrashSettingsActivity.start(this)
+            SettingsIndex.LANGUAGE -> pickLanguage()
             else -> SetupActivity.startSection(this, section, cat, focusId)
         }
+    }
+
+    /** In-app language switch (AppCompat per-app locales; stored by AppLocalesMetadataHolderService below API 33). */
+    private fun pickLanguage() {
+        val tags = arrayOf("", "th", "en")
+        val labels = arrayOf(getString(R.string.sr_lang_system), "ไทย", "English")
+        val current = AppCompatDelegate.getApplicationLocales().toLanguageTags().substringBefore('-').substringBefore(',')
+        val checked = tags.indexOf(current).coerceAtLeast(0)
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.sr_cat_language)
+            .setSingleChoiceItems(labels, checked) { d, which ->
+                d.dismiss()
+                if (which != checked) {
+                    AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(tags[which]))
+                }
+            }
+            .show()
     }
 
     private fun addRow(parent: ViewGroup, title: String, sub: String, icon: Int, onClick: () -> Unit) {
