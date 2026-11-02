@@ -227,6 +227,9 @@
         <activity
             android:name=".MoreActivity"
             android:exported="false" />
+        <activity
+            android:name=".BleSurveyActivity"
+            android:exported="false" />
         <service
             android:name=".WearListenerService"
             android:exported="true">

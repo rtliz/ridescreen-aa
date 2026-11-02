@@ -131,6 +131,9 @@ class MoreActivity : AppCompatActivity() {
             row(R.drawable.ic_rs_wrench, R.string.home_rd_more_maint, getString(R.string.home_rd_more_maint_sub)) {
                 MaintenanceActivity.start(this@MoreActivity)
             }
+            row(R.drawable.ic_rs_live, R.string.home_rd_more_ble, getString(R.string.home_rd_more_ble_sub)) {
+                BleSurveyActivity.start(this@MoreActivity)
+            }
         }
 
         section(R.string.home_rd_more_stats).apply {

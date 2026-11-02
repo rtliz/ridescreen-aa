@@ -42,6 +42,16 @@
     <string name="home_rd_more_fuel_sub">Nearby stations and prices</string>
     <string name="home_rd_more_maint">Maintenance</string>
     <string name="home_rd_more_maint_sub">Oil, chain, tyres and refuels</string>
+    <string name="home_rd_more_ble">Bike Bluetooth survey</string>
+    <string name="home_rd_more_ble_sub">Read-only log of what the bike sends (for RPM research)</string>
+    <string name="ble_survey_title">Bike Bluetooth survey</string>
+    <string name="ble_survey_steps">Read only: this screen never sends a command to the bike.\n1. Close the official Zontes app. Ignition ON.\n2. Tap Scan, then tap the strongest device (★ = keyless box).\n3. When it says \"listening\": start the engine, idle 20 s, hold ~3000 rpm 10 s, ~5000 rpm 10 s, idle 10 s, engine off.\n4. Tap Share log and send it.</string>
+    <string name="ble_survey_scan">Scan</string>
+    <string name="ble_survey_stop">Stop</string>
+    <string name="ble_survey_share">Share log</string>
+    <string name="ble_survey_ask_off">Ask battery every 3 s: off</string>
+    <string name="ble_survey_ask_on">Ask battery every 3 s: ON</string>
+    <string name="ble_survey_bt_off">Turn Bluetooth on first</string>
     <string name="home_rd_more_garage">Garage</string>
     <string name="home_rd_more_garage_sub">Your bikes and their photos</string>
     <string name="home_rd_more_trophies">Trophies</string>

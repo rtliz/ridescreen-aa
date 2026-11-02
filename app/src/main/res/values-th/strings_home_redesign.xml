@@ -42,6 +42,16 @@
     <string name="home_rd_more_fuel_sub">ปั๊มใกล้ฉันและราคา</string>
     <string name="home_rd_more_maint">บำรุงรักษา</string>
     <string name="home_rd_more_maint_sub">น้ำมันเครื่อง โซ่ ยาง และการเติมน้ำมัน</string>
+    <string name="home_rd_more_ble">สำรวจ Bluetooth ของรถ</string>
+    <string name="home_rd_more_ble_sub">บันทึกสิ่งที่รถส่งมา แบบอ่านอย่างเดียว (หาทางอ่านรอบเครื่อง)</string>
+    <string name="ble_survey_title">สำรวจ Bluetooth ของรถ</string>
+    <string name="ble_survey_steps">อ่านอย่างเดียว: หน้านี้ไม่ส่งคำสั่งใดๆ ไปที่รถ\n1. ปิดแอป Zontes ทางการ แล้วเปิดสวิตช์กุญแจรถ\n2. กด \"สแกน\" แล้วแตะอุปกรณ์ที่สัญญาณแรงสุด (★ = กล่อง keyless)\n3. พอขึ้นคำว่า \"listening\": สตาร์ตเครื่อง เดินเบา 20 วิ → ค้างรอบ ~3000 10 วิ → ~5000 10 วิ → เดินเบา 10 วิ → ดับเครื่อง\n4. กด \"แชร์ผล\" แล้วส่งมา</string>
+    <string name="ble_survey_scan">สแกน</string>
+    <string name="ble_survey_stop">หยุด</string>
+    <string name="ble_survey_share">แชร์ผล</string>
+    <string name="ble_survey_ask_off">ถามค่าแบตทุก 3 วิ: ปิด</string>
+    <string name="ble_survey_ask_on">ถามค่าแบตทุก 3 วิ: เปิด</string>
+    <string name="ble_survey_bt_off">เปิด Bluetooth ก่อนครับ</string>
     <string name="home_rd_more_garage">โรงรถ</string>
     <string name="home_rd_more_garage_sub">รถของคุณและรูปถ่าย</string>
     <string name="home_rd_more_trophies">ถ้วยรางวัล</string>
