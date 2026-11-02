@@ -493,7 +493,15 @@ class VideoPipeline(
             val pres = Presentation(context, display)
             // VirtualDisplay Presentation contexts often lack the app theme — AppCompat/Material
             // ?attr/… then fail with InflateException "Error inflating class <unknown>".
-            val themed = ContextThemeWrapper(pres.context, R.style.Theme_OpenCfMoto)
+            // The in-app language (AppCompat per-app locale) reaches activities only, not this
+            // service-owned Presentation: apply it here so the dash labels match the phone app.
+            val appLocales = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales()
+            val presCtx = if (appLocales.isEmpty) pres.context else pres.context.createConfigurationContext(
+                android.content.res.Configuration(pres.context.resources.configuration).apply {
+                    setLocales(android.os.LocaleList.forLanguageTags(appLocales.toLanguageTags()))
+                },
+            )
+            val themed = ContextThemeWrapper(presCtx, R.style.Theme_OpenCfMoto)
             // Zontes 368 + wide panel (or the rider's choice in Map settings): the chosen custom dash
             // design, with the same map inside its slot. Everything else keeps the standard chrome.
             val stock = if (MapPrefs.useStock368(context, width, height)) {

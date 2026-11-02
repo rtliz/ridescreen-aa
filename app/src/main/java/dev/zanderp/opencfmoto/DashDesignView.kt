@@ -349,6 +349,10 @@ class DashLetterbox(context: Context) : FrameLayout(context) {
         var fw = w
         var fh = Math.round(w * DashDesignView.DESIGN_H / DashDesignView.DESIGN_W)
         if (fh > h) { fh = h; fw = Math.round(h * DashDesignView.DESIGN_W / DashDesignView.DESIGN_H) }
+        // Riders want the whole panel used: renderers scale x and y separately (sizes by the smaller
+        // one), so fill the canvas when its shape is near 1024:425; only very different shapes letterbox.
+        val ratio = if (h > 0) (w.toFloat() / h) / (DashDesignView.DESIGN_W / DashDesignView.DESIGN_H) else 1f
+        if (ratio in FILL_MIN..FILL_MAX) { fw = w; fh = h }
         val spec = { n: Int -> MeasureSpec.makeMeasureSpec(n, MeasureSpec.EXACTLY) }
         for (i in 0 until childCount) getChildAt(i).measure(spec(fw), spec(fh))
     }
@@ -360,5 +364,10 @@ class DashLetterbox(context: Context) : FrameLayout(context) {
             val y = ((b - t) - ch.measuredHeight) / 2
             ch.layout(x, y, x + ch.measuredWidth, y + ch.measuredHeight)
         }
+    }
+
+    private companion object {
+        const val FILL_MIN = 0.6f
+        const val FILL_MAX = 1.6f
     }
 }
