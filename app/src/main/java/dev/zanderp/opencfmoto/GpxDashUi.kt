@@ -2355,20 +2355,22 @@ class GpxDashUi(
                 rideStats.onLocation(loc.latitude, loc.longitude, loc.speed)
                 if (compact) {
                     val t = DashTelemetry
-                    // Only real GPS fixes count, aged by their own timestamp (the last-known
-                    // location handed over at start can be hours old).
+                    // Only real GPS fixes feed the dash (network fixes carry no speed and would
+                    // blank it), aged by their own timestamp: the last-known location handed over
+                    // at start can be hours old, so it must not seed speed or the maximum.
                     if (loc.provider == LocationManager.GPS_PROVIDER) {
-                        val ageMs = (SystemClock.elapsedRealtimeNanos() - loc.elapsedRealtimeNanos) / 1_000_000L
-                        t.fixAtElapsedMs = SystemClock.elapsedRealtime() - ageMs.coerceAtLeast(0L)
-                    }
-                    t.liveSpeedKmh = if (loc.hasSpeed()) speedKmhEarly else Float.NaN
-                    if (loc.hasSpeed() && speedKmhEarly > t.sessionMaxKmh && speedKmhEarly < 400f) {
-                        t.sessionMaxKmh = speedKmhEarly
+                        val ageMs = ((SystemClock.elapsedRealtimeNanos() - loc.elapsedRealtimeNanos) / 1_000_000L)
+                            .coerceAtLeast(0L)
+                        t.fixAtElapsedMs = SystemClock.elapsedRealtime() - ageMs
+                        t.liveSpeedKmh = if (loc.hasSpeed()) speedKmhEarly else Float.NaN
+                        if (ageMs < 5_000L && loc.hasSpeed() && speedKmhEarly > t.sessionMaxKmh && speedKmhEarly < 400f) {
+                            t.sessionMaxKmh = speedKmhEarly
+                        }
+                        t.altitudeM = if (loc.hasAltitude()) loc.altitude.toFloat() else Float.NaN
+                        t.headingDeg = telemetryHeading()
                     }
                     t.sessionKm = rideStats.distanceM() / 1000.0
                     t.sessionMovingSec = (rideStats.movingMs() / 1000L).toInt()
-                    t.altitudeM = if (loc.hasAltitude()) loc.altitude.toFloat() else Float.NaN
-                    t.headingDeg = telemetryHeading()
                 }
                 if (lapTimer.onFix(loc.latitude, loc.longitude, loc.time.takeIf { it > 0L }
                         ?: System.currentTimeMillis())

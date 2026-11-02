@@ -137,6 +137,12 @@ class DashDesignView @JvmOverloads constructor(
         if (batteryOn) { DashTelemetry.stopBattery(context); batteryOn = false }
     }
 
+    /** Pause the tick and battery receiver while the screen is not visible (activity stopped). */
+    fun pause() = stop()
+
+    /** Resume after [pause]; a no-op unless attached as a LIVE view. */
+    fun resume() { if (mode == Mode.LIVE && isAttachedToWindow) start() }
+
     /** Stop the tick and the battery receiver (also happens on detach). Safe to call twice. */
     fun release() {
         stop()
@@ -267,6 +273,10 @@ class DashScreen private constructor(
     /** Release the 4 Hz tick and battery receiver. */
     fun release() = view.release()
 
+    /** Stop / restart the 4 Hz tick while the host is not on screen. */
+    fun pause() = view.pause()
+    fun resume() = view.resume()
+
     companion object {
         /** [design] not built yet ([DashDesign.factory] null) falls back to [DashDesign.DEFAULT]. */
         fun inflate(ctx: Context, design: DashDesign): DashScreen {
@@ -274,10 +284,14 @@ class DashScreen private constructor(
             // Extras are resolved once here: the renderer never looks prefs up while drawing.
             val renderer = use.newRenderer(ctx, DashPrefs.extras(ctx, use))!!
             val inflater = LayoutInflater.from(ctx)
-            val root = inflater.inflate(R.layout.presentation_dash, null) as FrameLayout
-            val slot = root.findViewById<FrameLayout>(R.id.dash_map_slot)
-            val view = root.findViewById<DashDesignView>(R.id.dash_view)
-            val overlay = root.findViewById<DashDesignView>(R.id.dash_overlay)
+            val content = inflater.inflate(R.layout.presentation_dash, null) as FrameLayout
+            // Black outer container: letterboxes the 1024:425 content on any panel shape. It is the
+            // screen root (touch target, setContentView); touches reach the content with the offset.
+            val root = DashLetterbox(ctx)
+            root.addView(content, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+            val slot = content.findViewById<FrameLayout>(R.id.dash_map_slot)
+            val view = content.findViewById<DashDesignView>(R.id.dash_view)
+            val overlay = content.findViewById<DashDesignView>(R.id.dash_overlay)
             val map = inflater.inflate(R.layout.presentation_gpx, slot, false)
             slot.addView(
                 map,
@@ -315,6 +329,36 @@ class DashScreen private constructor(
                 overlay.visibility = View.GONE
             }
             return DashScreen(use, root, map, view)
+        }
+    }
+}
+
+/**
+ * Black container around a dash design that fits its single child to the largest 1024:425 rectangle
+ * and centres it, so a design is never stretched on a panel of another shape. The design draws in
+ * that rectangle only; touches on the bars hit nothing, and touches on the child are offset by the
+ * normal ViewGroup dispatch, so the map gets correct coordinates.
+ */
+class DashLetterbox(context: Context) : FrameLayout(context) {
+    init { setBackgroundColor(0xFF000000.toInt()) }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val w = MeasureSpec.getSize(widthMeasureSpec)
+        val h = MeasureSpec.getSize(heightMeasureSpec)
+        setMeasuredDimension(w, h)
+        var fw = w
+        var fh = Math.round(w * DashDesignView.DESIGN_H / DashDesignView.DESIGN_W)
+        if (fh > h) { fh = h; fw = Math.round(h * DashDesignView.DESIGN_W / DashDesignView.DESIGN_H) }
+        val spec = { n: Int -> MeasureSpec.makeMeasureSpec(n, MeasureSpec.EXACTLY) }
+        for (i in 0 until childCount) getChildAt(i).measure(spec(fw), spec(fh))
+    }
+
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        for (i in 0 until childCount) {
+            val ch = getChildAt(i)
+            val x = ((r - l) - ch.measuredWidth) / 2
+            val y = ((b - t) - ch.measuredHeight) / 2
+            ch.layout(x, y, x + ch.measuredWidth, y + ch.measuredHeight)
         }
     }
 }

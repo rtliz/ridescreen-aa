@@ -58,8 +58,6 @@ class HudViewActivity : AppCompatActivity() {
 
         surface = findViewById(R.id.hud_surface)
         gpxHost = findViewById(R.id.hud_gpx_host)
-        // The Stock 368G screen is a fixed 1024:425 canvas: fit it inside the host, centred.
-        gpxHost.addOnLayoutChangeListener { _, l, t, r, b, _, _, _, _ -> fitStockScreen(r - l, b - t) }
         hint = findViewById(R.id.hud_hint)
         titleView = findViewById(R.id.hud_title)
 
@@ -152,6 +150,16 @@ class HudViewActivity : AppCompatActivity() {
         gpxUi?.onConfigurationChanged()
     }
 
+    override fun onStart() {
+        super.onStart()
+        stockScreen?.resume()
+    }
+
+    override fun onStop() {
+        stockScreen?.pause()
+        super.onStop()
+    }
+
     override fun onPause() {
         if (isFinishing) stopGpxPreview()
         super.onPause()
@@ -225,7 +233,6 @@ class HudViewActivity : AppCompatActivity() {
                     FrameLayout.LayoutParams.MATCH_PARENT,
                 ),
             )
-            fitStockScreen(gpxHost.width, gpxHost.height)
         } else {
             gpxHost.addView(
                 root,
@@ -277,18 +284,6 @@ class HudViewActivity : AppCompatActivity() {
             GpxSession.Mode.FREE_RIDE -> "Map preview"
         }
         LogBus.log("[HUD] Map preview bound (${GpxSession.mode} '${GpxSession.trackName}')")
-    }
-
-    /** Size the custom dash root to the largest 1024:425 rectangle that fits [w]×[h]. */
-    private fun fitStockScreen(w: Int, h: Int) {
-        val root = stockScreen?.root ?: return
-        if (w <= 0 || h <= 0) return
-        var fw = w
-        var fh = Math.round(w * 425f / 1024f)
-        if (fh > h) { fh = h; fw = Math.round(h * 1024f / 425f) }
-        val cur = root.layoutParams as? FrameLayout.LayoutParams
-        if (cur != null && cur.width == fw && cur.height == fh) return
-        root.layoutParams = FrameLayout.LayoutParams(fw, fh, android.view.Gravity.CENTER)
     }
 
     private fun stopGpxPreview() {

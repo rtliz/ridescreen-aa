@@ -200,7 +200,7 @@ object DashTelemetry : DashValues() {
         val snap = TripLogger.current?.takeIf { it.recording }?.snapshot()
         recording = snap != null
 
-        // GPS: the location listener skips updates under 1.5 m, so a stopped bike gets no callbacks.
+        // GPS: compact mode asks for updates at 0 m, so a stopped bike still gets callbacks, but a lost fix stops them.
         // Fix freshness is judged on our own last GPS fix, not TripRecorder.hasFix (it stays true
         // until recording stops, so a tunnel would freeze the speed).
         val age = if (fixAtElapsedMs == 0L) Long.MAX_VALUE else nowEl - fixAtElapsedMs
@@ -241,7 +241,7 @@ object DashTelemetry : DashValues() {
             bookKm = b.odometer ?: b.appKm
             odometerFromBook = b.odometer != null
             tankLiters = DashPrefs.tankLiters(ctx) ?: Float.NaN
-            val sig = b.log.size * 1_000_003L + java.lang.Double.doubleToLongBits(b.appKm)
+            val sig = (b.log.size * 1_000_003L + java.lang.Double.doubleToLongBits(b.appKm)) * 31 + (b.log.maxOfOrNull { it.at } ?: 0L)
             if (sig != fuelSig) {
                 fuelSig = sig
                 bookAppKm = b.appKm
