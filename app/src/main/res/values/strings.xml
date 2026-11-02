@@ -673,6 +673,17 @@
     <string name="dash_design_8">Touring</string>
     <string name="dash_design_9">Vintage dial</string>
     <string name="dash_design_10">Easy-read list</string>
+    <string name="dash_design_11">Neon ring</string>
+    <string name="dash_design_12">Carbon + red needle</string>
+    <string name="dash_design_13">Retro 7-segment LCD</string>
+    <string name="dash_design_14">Fighter-jet HUD</string>
+    <string name="dash_design_15">Synthwave sunset</string>
+    <string name="dash_design_16">Japanese sport sweep</string>
+    <string name="dash_design_17">Swiss minimal</string>
+    <string name="dash_design_18">Airspeed indicator</string>
+    <string name="dash_design_19">Liquid sphere</string>
+    <string name="dash_design_20">Big Thai numerals</string>
+    <string name="dash_group_speedo">Speedometer only</string>
     <string name="dash_sample_road">Rama 9 Rd</string>
     <string name="dash_speed_now">Current speed</string>
     <string name="dash_speed">Speed</string>

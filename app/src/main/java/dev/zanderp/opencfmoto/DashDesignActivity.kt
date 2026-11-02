@@ -75,24 +75,41 @@ class DashDesignActivity : AppCompatActivity() {
         val grid = findViewById<LinearLayout>(R.id.dash_design_grid)
         val gap = dp(8)
         var row: LinearLayout? = null
-        DashDesign.entries.forEachIndexed { i, d ->
-            if (i % 2 == 0) {
+        var n = 0   // cards in the current group
+        var first = true
+        for (d in DashDesign.entries) {
+            if (d == DashDesign.NEON_RING) {
+                // Start of the speedometer-only group: finish the half-filled row, add a heading.
+                if (n % 2 == 1) row!!.addView(View(this), LinearLayout.LayoutParams(0, 0, 1f).also { it.marginStart = gap / 2 })
+                grid.addView(TextView(this).apply {
+                    setText(R.string.dash_group_speedo)
+                    setTextColor(ContextCompat.getColor(context, R.color.text_primary))
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                    setTypeface(typeface, android.graphics.Typeface.BOLD)
+                }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).also {
+                    it.topMargin = dp(20)
+                })
+                n = 0
+            }
+            if (n % 2 == 0) {
                 row = LinearLayout(this).apply {
                     orientation = LinearLayout.HORIZONTAL
                     isBaselineAligned = false
                 }
                 grid.addView(row, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).also {
-                    if (i > 0) it.topMargin = gap
+                    if (!first) it.topMargin = gap
                 })
             }
+            first = false
             val card = makeCard(d)
             row!!.addView(card, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).also {
-                if (i % 2 == 0) it.marginEnd = gap / 2 else it.marginStart = gap / 2
+                if (n % 2 == 0) it.marginEnd = gap / 2 else it.marginStart = gap / 2
             })
             cards += d to card
+            n++
         }
-        // Odd count: keep the last card half width.
-        if (DashDesign.entries.size % 2 == 1) {
+        // Odd count in the last group: keep the last card half width.
+        if (n % 2 == 1) {
             row!!.addView(View(this), LinearLayout.LayoutParams(0, 0, 1f).also { it.marginStart = gap / 2 })
         }
     }

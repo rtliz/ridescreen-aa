@@ -169,7 +169,83 @@ class DashSlots(val k: DashKit) {
         c.restore()
     }
 
+    // ---------------------------------------------------------------- speedometer-only helpers (#11–#20)
+
+    /** Whole-screen speed int (-1 unknown) as every #11–#20 design shows and signs it. */
+    fun speedInt(t: DashValues): Int = if (t.speedKmh.isNaN()) -1 else t.speedKmh.toInt().coerceIn(0, 999)
+
+    /** Fill [vis] with the visible extras and return how many of them fit the two corner slots. */
+    fun two(t: DashValues): Int = minOf(collect(t), 2)
+
+    /**
+     * Small corner readout of extra [e]: an optional label (cut to fit), then value + unit. The clock
+     * and battery show no label. [align] 0 = left of [x], 1 = centred on it, 2 = right of it.
+     */
+    fun readout(
+        c: Canvas, p: Paint, e: DashExtra, t: DashValues, x: Float, base: Float, size: Float, align: Int,
+        color: Int, labelColor: Int, maxW: Float,
+    ) {
+        value(e, t)
+        val unit = k.text.unit(e)
+        val gap = size * 0.3f
+        val numW = numWidth(p, size, unit, size * 0.7f, size * 0.2f)
+        val withLabel = e != DashExtra.CLOCK && e != DashExtra.PHONE_BATTERY
+        var labelW = 0f
+        var labelN = 0
+        val label = k.text.label(e)
+        if (withLabel) {
+            k.pLabel.textSize = size * 0.7f
+            labelN = k.pLabel.breakText(label, true, maxOf(0f, maxW - numW - gap), null)
+            labelW = if (labelN > 0) k.pLabel.measureText(label, 0, labelN) + gap else 0f
+        }
+        val total = labelW + numW
+        var l = if (align == 0) x else if (align == 1) x - total / 2f else x - total
+        if (labelN > 0) {
+            k.pLabel.color = labelColor; k.pLabel.textAlign = Paint.Align.LEFT; k.pLabel.textSize = size * 0.7f
+            c.drawText(label, 0, labelN, l, base, k.pLabel)
+            l += labelW
+        }
+        numUnit(c, p, l, base, size, color, unit, size * 0.7f, labelColor, size * 0.2f)
+    }
+
+    /** Linear blend of two ARGB colours (no allocation). */
+    fun lerp(a: Int, b: Int, f: Float): Int {
+        val g = f.coerceIn(0f, 1f)
+        val r = ((a shr 16 and 255) + ((b shr 16 and 255) - (a shr 16 and 255)) * g).toInt()
+        val gr = ((a shr 8 and 255) + ((b shr 8 and 255) - (a shr 8 and 255)) * g).toInt()
+        val bl = ((a and 255) + ((b and 255) - (a and 255)) * g).toInt()
+        return (0xFF shl 24) or (r shl 16) or (gr shl 8) or bl
+    }
+
+    /**
+     * Put the canvas in design space (1024×425 units, uniform scale [s], centred): the speedometer-only
+     * designs are single compositions, so every shape is drawn in design px between this and [end].
+     */
+    fun begin(c: Canvas, sx: Float, sy: Float, s: Float) {
+        c.save()
+        c.translate(512f * sx, 212.5f * sy)
+        c.scale(s, s)
+        c.translate(-512f, -212.5f)
+    }
+
+    fun end(c: Canvas) = c.restore()
+
+    /**
+     * Fill [out] with line endpoints (x1,y1,x2,y2) of [n] ticks on a dial around ([cx],[cy]) at [a0] + i·[step]
+     * degrees clockwise from 12 o'clock, from radius [r1] to [r2]. Built once, in a constructor.
+     */
+    fun ticks(out: FloatArray, from: Int, n: Int, a0: Double, step: Double, cx: Float, cy: Float, r1: Float, r2: Float) {
+        for (i in 0 until n) {
+            val a = Math.toRadians(a0 + i * step)
+            val sn = Math.sin(a).toFloat()
+            val cs = -Math.cos(a).toFloat()
+            val j = (from + i) * 4
+            out[j] = cx + sn * r1; out[j + 1] = cy + cs * r1; out[j + 2] = cx + sn * r2; out[j + 3] = cy + cs * r2
+        }
+    }
+
     companion object {
         const val SPEED_MAX = 180f
+        const val UNIT = "KM/H"
     }
 }

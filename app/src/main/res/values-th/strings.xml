@@ -672,6 +672,17 @@
     <string name="dash_design_8">ทัวร์ริ่ง</string>
     <string name="dash_design_9">เข็มวินเทจ</string>
     <string name="dash_design_10">รายการอ่านง่าย</string>
+    <string name="dash_design_11">นีออนริง</string>
+    <string name="dash_design_12">คาร์บอน + เข็มแดง</string>
+    <string name="dash_design_13">LCD เรโทร 7 ส่วน</string>
+    <string name="dash_design_14">HUD เครื่องบินรบ</string>
+    <string name="dash_design_15">ซินธ์เวฟ พระอาทิตย์ตก</string>
+    <string name="dash_design_16">สปอร์ตญี่ปุ่น แถบกวาด</string>
+    <string name="dash_design_17">มินิมอลแบบสวิส</string>
+    <string name="dash_design_18">มาตรวัดความเร็วอากาศยาน</string>
+    <string name="dash_design_19">ลูกแก้วน้ำเติม</string>
+    <string name="dash_design_20">เลขไทยตัวโต</string>
+    <string name="dash_group_speedo">เรือนไมล์ล้วน</string>
     <string name="dash_sample_road">ถนนพระราม 9</string>
     <string name="dash_speed_now">ความเร็วตอนนี้</string>
     <string name="dash_speed">ความเร็ว</string>
