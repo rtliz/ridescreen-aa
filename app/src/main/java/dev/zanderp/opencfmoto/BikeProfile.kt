@@ -847,6 +847,10 @@ internal object KnownDashes {
         modelId?.trim()?.let { byModelId[it] }
             ?: ctx?.let { c -> BikePicker.selected(c)?.dashKey?.let { byPickedKey[it] } }
 
+    /** The Zontes 368 family: QR modelId "21334", or a 368 the rider picked in [BikePicker]. */
+    fun isZontes368(modelId: String?, ctx: Context? = null): Boolean =
+        modelId?.trim() == "21334" || (ctx != null && BikePicker.selected(ctx)?.dashKey == "368")
+
     fun panelFor(modelId: String?, ctx: Context? = null): Pair<Int, Int>? = find(modelId, ctx)?.panel
     fun profileFor(modelId: String?): BikeProfile? = find(modelId, null)?.profile?.invoke()
     fun matchModeFor(modelId: String?, ctx: Context? = null): MatchAspectMode? = find(modelId, ctx)?.matchMode

@@ -80,6 +80,7 @@ class VideoPipeline(
     private var mirrorDisplayListener: DisplayManager.DisplayListener? = null
     private var gpxVoice: GpxVoice? = null
     private var gpxDashUi: GpxDashUi? = null
+    private var stockScreen: Stock368Screen? = null
     private var encoderW = 0
     private var encoderH = 0
     @Volatile private var running = false
@@ -493,16 +494,29 @@ class VideoPipeline(
             // VirtualDisplay Presentation contexts often lack the app theme — AppCompat/Material
             // ?attr/… then fail with InflateException "Error inflating class <unknown>".
             val themed = ContextThemeWrapper(pres.context, R.style.Theme_OpenCfMoto)
-            val root = LayoutInflater.from(themed).inflate(R.layout.presentation_gpx, null)
-            val ui = GpxDashUi(themed, root, log, isAlive = { running }, projected = true)
+            // Zontes 368 + wide panel (or the rider's choice in Map settings): the "Stock 368G" screen,
+            // with the same map inside its centre slot. Everything else keeps the standard chrome.
+            val stock = if (MapPrefs.useStock368(context, width, height)) {
+                try { Stock368Screen.inflate(themed) } catch (e: Exception) {
+                    log("[GPX] Stock 368G inflate failed, using standard: $e"); null
+                }
+            } else null
+            val root = stock?.mapRoot ?: LayoutInflater.from(themed).inflate(R.layout.presentation_gpx, null)
+            val ui = GpxDashUi(themed, root, log, isAlive = { running }, projected = true, compact = stock != null)
             if (!ui.bind()) {
                 ui.release()
+                stock?.release()
                 setupDisplayAndPresentation()
                 return
             }
             gpxDashUi = ui
+            stockScreen = stock
+            // Handlebar/touch events come in 1024x425 canvas coordinates: aim them at the whole
+            // screen (the map sits offset inside it), not at the map view.
+            if (stock != null) GpxSession.setTouchTarget(stock.root)
             gpxVoice = null
-            pres.setContentView(root)
+            pres.setContentView(stock?.root ?: root)
+            if (stock != null) log("[GPX] Stock 368G dash layout in use")
             try {
                 pres.window?.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             } catch (_: Exception) {
@@ -518,6 +532,8 @@ class VideoPipeline(
             log("[GPX] presentation failed: $e${cause?.let { " cause=$it" } ?: ""}")
             try { gpxDashUi?.release() } catch (_: Exception) {}
             gpxDashUi = null
+            try { stockScreen?.release() } catch (_: Exception) {}
+            stockScreen = null
             setupDisplayAndPresentation()
         }
     }
@@ -799,6 +815,8 @@ class VideoPipeline(
         main.post {
             try { gpxDashUi?.release() } catch (_: Exception) {}
             gpxDashUi = null
+            try { stockScreen?.release() } catch (_: Exception) {}
+            stockScreen = null
             try { presentation?.dismiss() } catch (_: Exception) {}
             presentation = null
             try { virtualDisplay?.release() } catch (_: Exception) {}

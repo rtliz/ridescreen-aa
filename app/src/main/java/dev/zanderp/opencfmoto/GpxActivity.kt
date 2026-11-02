@@ -275,6 +275,18 @@ class GpxActivity : AppCompatActivity() {
             MapPrefs.setUnits(this, MapUnits.IMPERIAL)
             refreshSettingsUi()
         }
+        findViewById<MaterialButton>(R.id.gpx_layout_auto).setOnClickListener {
+            MapPrefs.setDashLayout(this, DashLayout.AUTO)
+            refreshSettingsUi()
+        }
+        findViewById<MaterialButton>(R.id.gpx_layout_standard).setOnClickListener {
+            MapPrefs.setDashLayout(this, DashLayout.STANDARD)
+            refreshSettingsUi()
+        }
+        findViewById<MaterialButton>(R.id.gpx_layout_stock368).setOnClickListener {
+            MapPrefs.setDashLayout(this, DashLayout.STOCK_368)
+            refreshSettingsUi()
+        }
         findViewById<MaterialButton>(R.id.gpx_theme_auto).setOnClickListener {
             NightPrefs.setTheme(this, MapTheme.AUTO)
             refreshSettingsUi()
@@ -422,6 +434,12 @@ class GpxActivity : AppCompatActivity() {
             MapPrefs.units(this),
             R.id.gpx_units_metric to MapUnits.METRIC,
             R.id.gpx_units_imperial to MapUnits.IMPERIAL,
+        )
+        highlight(
+            MapPrefs.dashLayout(this),
+            R.id.gpx_layout_auto to DashLayout.AUTO,
+            R.id.gpx_layout_standard to DashLayout.STANDARD,
+            R.id.gpx_layout_stock368 to DashLayout.STOCK_368,
         )
         highlight(
             NightPrefs.theme(this),

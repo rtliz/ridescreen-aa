@@ -643,4 +643,23 @@
     <string name="widget_connect_no_bike">No saved bike yet — connect once from the app first</string>
     <string name="widget_connect_already">Already connected</string>
     <string name="widget_connect_cancelled">Connection cancelled</string>
+    <!-- Stock 368G dash layout -->
+    <string name="dash368_layout_title">Dash layout</string>
+    <string name="dash368_layout_auto">Auto</string>
+    <string name="dash368_layout_standard">Standard</string>
+    <string name="dash368_layout_stock">Stock 368G</string>
+    <string name="dash368_layout_hint">Stock 368G suits the Zontes 368 screen. Takes effect the next time the map starts on the bike.</string>
+    <string name="dash368_trip_distance">Trip distance</string>
+    <string name="dash368_ride_time">Ride time</string>
+    <string name="dash368_max_speed">Max speed this trip</string>
+    <string name="dash368_unit_km">km</string>
+    <string name="dash368_unit_kmh">km/h</string>
+    <string name="dash368_unit_m">m</string>
+    <string name="dash368_altitude">Altitude</string>
+    <string name="dash368_app_odo">counted by the app</string>
+    <string name="dash368_speed_scale">Speed ×10 km/h</string>
+    <string name="dash368_turn_left">Turn left in</string>
+    <string name="dash368_turn_right">Turn right in</string>
+    <string name="dash368_arrive">Arrive</string>
+    <string name="dash368_unit_min">min</string>
 </resources>

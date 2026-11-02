@@ -46,6 +46,8 @@ class HudViewActivity : AppCompatActivity() {
     private var fullscreen = false
     private var gpxPreview = false
     private var gpxUi: GpxDashUi? = null
+    /** The Stock 368G screen when the preview uses it (null = standard map chrome). */
+    private var stockScreen: Stock368Screen? = null
     private var boundSessionKey: String? = null
     private lateinit var insetsController: WindowInsetsControllerCompat
 
@@ -56,6 +58,8 @@ class HudViewActivity : AppCompatActivity() {
 
         surface = findViewById(R.id.hud_surface)
         gpxHost = findViewById(R.id.hud_gpx_host)
+        // The Stock 368G screen is a fixed 1024:425 canvas: fit it inside the host, centred.
+        gpxHost.addOnLayoutChangeListener { _, l, t, r, b, _, _, _, _ -> fitStockScreen(r - l, b - t) }
         hint = findViewById(R.id.hud_hint)
         titleView = findViewById(R.id.hud_title)
 
@@ -198,22 +202,43 @@ class HudViewActivity : AppCompatActivity() {
         stopGpxPreview()
         gpxPreview = true
         gpxHost.removeAllViews()
+        val dm = resources.displayMetrics
+        val stock = if (MapPrefs.useStock368(this, dm.widthPixels, dm.heightPixels, autoPicks = false)) {
+            try { Stock368Screen.inflate(this) } catch (e: Exception) {
+                LogBus.log("[HUD] Stock 368G inflate failed, using standard: $e"); null
+            }
+        } else null
         val root = try {
-            LayoutInflater.from(this).inflate(R.layout.presentation_gpx, gpxHost, false)
+            stock?.mapRoot ?: LayoutInflater.from(this).inflate(R.layout.presentation_gpx, gpxHost, false)
         } catch (e: Exception) {
             gpxPreview = false
             LogBus.log("[HUD] inflate map chrome failed: $e")
             Toast.makeText(this, "Map UI failed to open", Toast.LENGTH_LONG).show()
             return
         }
-        gpxHost.addView(
-            root,
-            FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT,
-            ),
+        if (stock != null) {
+            stockScreen = stock
+            gpxHost.addView(
+                stock.root,
+                FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                ),
+            )
+            fitStockScreen(gpxHost.width, gpxHost.height)
+        } else {
+            gpxHost.addView(
+                root,
+                FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                ),
+            )
+        }
+        val ui = GpxDashUi(
+            this, root, { LogBus.log(it) }, isAlive = { !isFinishing && gpxPreview },
+            compact = stock != null,
         )
-        val ui = GpxDashUi(this, root, { LogBus.log(it) }, isAlive = { !isFinishing && gpxPreview })
         val ok = try {
             ui.bind()
         } catch (e: Exception) {
@@ -226,6 +251,8 @@ class HudViewActivity : AppCompatActivity() {
         if (!ok) {
             gpxPreview = false
             try { ui.release() } catch (_: Exception) {}
+            try { stockScreen?.release() } catch (_: Exception) {}
+            stockScreen = null
             gpxHost.removeAllViews()
             Toast.makeText(this, "Could not load map — try again from Map hub", Toast.LENGTH_LONG).show()
             return
@@ -251,6 +278,18 @@ class HudViewActivity : AppCompatActivity() {
         LogBus.log("[HUD] Map preview bound (${GpxSession.mode} '${GpxSession.trackName}')")
     }
 
+    /** Size the Stock 368G root to the largest 1024:425 rectangle that fits [w]×[h]. */
+    private fun fitStockScreen(w: Int, h: Int) {
+        val root = stockScreen?.root ?: return
+        if (w <= 0 || h <= 0) return
+        var fw = w
+        var fh = Math.round(w * 425f / 1024f)
+        if (fh > h) { fh = h; fw = Math.round(h * 1024f / 425f) }
+        val cur = root.layoutParams as? FrameLayout.LayoutParams
+        if (cur != null && cur.width == fw && cur.height == fh) return
+        root.layoutParams = FrameLayout.LayoutParams(fw, fh, android.view.Gravity.CENTER)
+    }
+
     private fun stopGpxPreview() {
         if (!gpxPreview && gpxUi == null) {
             boundSessionKey = null
@@ -260,6 +299,8 @@ class HudViewActivity : AppCompatActivity() {
         boundSessionKey = null
         try { gpxUi?.release() } catch (_: Exception) {}
         gpxUi = null
+        try { stockScreen?.release() } catch (_: Exception) {}
+        stockScreen = null
         gpxHost.removeAllViews()
         gpxHost.visibility = View.GONE
         insetsController.show(SafeInsets.BARS)

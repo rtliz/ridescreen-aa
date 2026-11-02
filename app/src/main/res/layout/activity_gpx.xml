@@ -340,6 +340,62 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
+                    android:text="@string/dash368_layout_title"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/gpx_layout_auto"
+                            style="@style/Widget.OpenCfMoto.Segment"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="0dp"
+                            android:layout_marginEnd="4dp"
+                            android:layout_weight="1"
+                            android:text="@string/dash368_layout_auto" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/gpx_layout_standard"
+                            style="@style/Widget.OpenCfMoto.Segment"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="4dp"
+                            android:layout_weight="1"
+                            android:text="@string/dash368_layout_standard" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/gpx_layout_stock368"
+                            style="@style/Widget.OpenCfMoto.Segment"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="0dp"
+                            android:layout_weight="1"
+                            android:text="@string/dash368_layout_stock" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/dash368_layout_hint"
+                    android:textColor="@color/text_primary"
+                    android:alpha="0.7"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
                     android:text="@string/controls_map_theme"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"

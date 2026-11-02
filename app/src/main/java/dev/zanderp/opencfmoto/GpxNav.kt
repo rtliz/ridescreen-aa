@@ -704,6 +704,10 @@ class GpxRideStats {
         movingTimeMs += dt
     }
 
+    /** Moving distance and time so far this session (for the Stock 368G trip panels). */
+    fun distanceM(): Double = movingDistM
+    fun movingMs(): Long = movingTimeMs
+
     /** Average moving speed km/h. */
     fun avgKmh(): Float {
         if (movingTimeMs < 5_000L) return 0f

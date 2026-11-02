@@ -24,6 +24,12 @@ enum class RouteMode(val label: String) {
 }
 
 /**
+ * Which dash screen the Map projects. AUTO picks the Zontes 368 "stock" look only on a 368 whose
+ * panel is wide and short (1024×425); every other bike keeps the standard map chrome.
+ */
+enum class DashLayout { AUTO, STANDARD, STOCK_368 }
+
+/**
  * Map / GPX rider preferences (units, voice, next-stop, chrome, arrive, routing).
  * Day/night tiles reuse [NightPrefs] (same Auto/Day/Night as Android Auto Maps theme).
  */
@@ -40,6 +46,7 @@ object MapPrefs {
     private const val KEY_AVOID_TOLLS = "avoid_tolls"
     private const val KEY_AVOID_HIGHWAYS = "avoid_highways"
     private const val KEY_CIRCUIT_KM = "fun_circuit_km"
+    private const val KEY_DASH_LAYOUT = "dash_layout"
 
     private fun prefs(ctx: Context) =
         ctx.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -141,6 +148,26 @@ object MapPrefs {
 
     fun setFunCircuitKm(ctx: Context, km: Int) {
         prefs(ctx).edit().putInt(KEY_CIRCUIT_KM, km.coerceIn(20, 150)).apply()
+    }
+
+    fun dashLayout(ctx: Context): DashLayout {
+        val name = prefs(ctx).getString(KEY_DASH_LAYOUT, DashLayout.AUTO.name)
+        return runCatching { DashLayout.valueOf(name!!) }.getOrDefault(DashLayout.AUTO)
+    }
+
+    fun setDashLayout(ctx: Context, layout: DashLayout) {
+        prefs(ctx).edit().putString(KEY_DASH_LAYOUT, layout.name).apply()
+    }
+
+    /**
+     * True when the Map should use the Zontes 368G stock-style screen on a canvas of [w]×[h] px.
+     * AUTO needs a 368 and a canvas at least 2.2:1 (and [autoPicks], false for the phone preview); STOCK_368 forces it (also for the phone preview).
+     */
+    fun useStock368(ctx: Context, w: Int, h: Int, autoPicks: Boolean = true): Boolean = when (dashLayout(ctx)) {
+        DashLayout.STANDARD -> false
+        DashLayout.STOCK_368 -> true
+        DashLayout.AUTO -> autoPicks && h > 0 && w.toFloat() / h >= 2.2f &&
+            KnownDashes.isZontes368(BikeMemory.lastQr(ctx)?.modelId, ctx)
     }
 
     /** Snapshot used by [OfflineRouter] for every route request. */

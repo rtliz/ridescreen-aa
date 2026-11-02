@@ -121,6 +121,8 @@ class SetupActivity : AppCompatActivity() {
         findViewById<MaterialButton>(R.id.res_port_sd).setOnClickListener { setResolution(ResolutionMode.PORTRAIT_SD) }
         findViewById<MaterialButton>(R.id.res_port_hd).setOnClickListener { setResolution(ResolutionMode.PORTRAIT_HD) }
         findViewById<MaterialButton>(R.id.dpi_auto).setOnClickListener { setAaDpi(null) }
+        findViewById<MaterialButton>(R.id.dpi_120).setOnClickListener { setAaDpi(120) }
+        findViewById<MaterialButton>(R.id.dpi_140).setOnClickListener { setAaDpi(140) }
         findViewById<MaterialButton>(R.id.dpi_160).setOnClickListener { setAaDpi(160) }
         findViewById<MaterialButton>(R.id.dpi_180).setOnClickListener { setAaDpi(180) }
         findViewById<MaterialButton>(R.id.dpi_240).setOnClickListener { setAaDpi(240) }
@@ -590,6 +592,8 @@ class SetupActivity : AppCompatActivity() {
         highlight<Int?>(
             dpi,
             R.id.dpi_auto to null,
+            R.id.dpi_120 to 120,
+            R.id.dpi_140 to 140,
             R.id.dpi_160 to 160,
             R.id.dpi_180 to 180,
             R.id.dpi_240 to 240,

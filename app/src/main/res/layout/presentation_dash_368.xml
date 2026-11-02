@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Stock 368G" dash (D2): chrome drawn by StockDashView, the Map (presentation_gpx) goes in the
+     slot. The slot's position/size are set from code once the view knows its measured size. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dash368_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#07090B">
+
+    <dev.zanderp.opencfmoto.StockDashView
+        android:id="@+id/dash368_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/dash368_map_slot"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="top|start" />
+
+    <!-- Turn card + ETA strip over the map; not clickable, so touches reach the map. -->
+    <dev.zanderp.opencfmoto.StockDashOverlay
+        android:id="@+id/dash368_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="top|start"
+        android:clickable="false"
+        android:focusable="false" />
+</FrameLayout>

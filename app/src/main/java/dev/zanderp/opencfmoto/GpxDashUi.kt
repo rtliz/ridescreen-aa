@@ -50,6 +50,11 @@ class GpxDashUi(
     private val isAlive: () -> Boolean,
     /** True when this dash is projected to the bike HUD: hide the phone-only back/Hub chrome. */
     private val projected: Boolean = false,
+    /**
+     * True when this map sits in the centre slot of the "Stock 368G" screen ([StockDashView]):
+     * its own speed/ETA/search chrome is hidden and live values are published to [DashTelemetry].
+     */
+    private val compact: Boolean = false,
 ) {
     private val main = Handler(Looper.getMainLooper())
     private var dash: DashMapEngine? = null
@@ -88,6 +93,7 @@ class GpxDashUi(
         }
         var gpxOriented = mode != GpxSession.Mode.GPX
 
+        if (compact) DashTelemetry.reset()
         val voiceLocal = GpxVoice(context).also { voice = it }
         var units = MapPrefs.units(context)
         var showNextStop = MapPrefs.showNextStop(context)
@@ -324,7 +330,7 @@ class GpxDashUi(
             root.findViewById<View>(R.id.gpx_hud)?.visibility = View.GONE
             root.findViewById<View>(R.id.gpx_hud_bottom)?.visibility = View.GONE
             root.findViewById<View>(R.id.gpx_preview_card)?.visibility = View.GONE
-            root.findViewById<View>(R.id.gpx_search_pill)?.visibility = View.VISIBLE
+            if (!compact) root.findViewById<View>(R.id.gpx_search_pill)?.visibility = View.VISIBLE
             if (!offerParking) hideArriveCard()
         }
         /**
@@ -480,6 +486,12 @@ class GpxDashUi(
                 units,
                 R.id.gpx_units_metric to MapUnits.METRIC,
                 R.id.gpx_units_imperial to MapUnits.IMPERIAL,
+            )
+            highlight(
+                MapPrefs.dashLayout(context),
+                R.id.gpx_layout_auto to DashLayout.AUTO,
+                R.id.gpx_layout_standard to DashLayout.STANDARD,
+                R.id.gpx_layout_stock368 to DashLayout.STOCK_368,
             )
             highlight(
                 NightPrefs.theme(context),
@@ -1149,6 +1161,17 @@ class GpxDashUi(
                 else -> lastMapBearing
             }
         }
+        // Heading for the Stock 368G compass: GPS course while riding, else the device compass,
+        // else unknown (NaN) — never a made-up north.
+        fun telemetryHeading(): Float {
+            val loc = lastLoc
+            val moving = loc?.let { it.hasSpeed() && it.speed > 1.2f } ?: false
+            return when {
+                loc != null && loc.hasBearing() && moving -> loc.bearing
+                haveDeviceHeading -> deviceHeading
+                else -> Float.NaN
+            }
+        }
         // Filled after applyProgress exists — compass ticks refresh off-road turn arrows.
         var onHeadingTick: (() -> Unit)? = null
         syncQuickLabels()
@@ -1200,6 +1223,7 @@ class GpxDashUi(
                         val now = SystemClock.uptimeMillis()
                         if (now - lastApplyMs < 120) return
                         lastApplyMs = now
+                        if (compact) DashTelemetry.headingDeg = telemetryHeading()
                         val moving = lastLoc?.let { it.hasSpeed() && it.speed > 1.2f } ?: false
                         // Off-road arrow follows the phone even while standing still.
                         onHeadingTick?.invoke()
@@ -1599,6 +1623,18 @@ class GpxDashUi(
 
         fun wireSeg(id: Int, action: () -> Unit) {
             root.findViewById<MaterialButton>(id)?.setOnClickListener { action() }
+        }
+        wireSeg(R.id.gpx_layout_auto) {
+            MapPrefs.setDashLayout(context, DashLayout.AUTO)
+            refreshSettingsLabels()
+        }
+        wireSeg(R.id.gpx_layout_standard) {
+            MapPrefs.setDashLayout(context, DashLayout.STANDARD)
+            refreshSettingsLabels()
+        }
+        wireSeg(R.id.gpx_layout_stock368) {
+            MapPrefs.setDashLayout(context, DashLayout.STOCK_368)
+            refreshSettingsLabels()
         }
         wireSeg(R.id.gpx_units_metric) {
             units = MapUnits.METRIC
@@ -2150,6 +2186,15 @@ class GpxDashUi(
             wSpeed.text = GpxNav.formatSpeed(speedKmh, units)
             val nav = liveNav
             val dest = liveDest
+            if (compact) {
+                DashTelemetry.setTurn(null, 0.0)
+                DashTelemetry.clearRoute()
+                if (prog != null && nav != null) DashTelemetry.setRoute(prog.etaSec, prog.remainM)
+                else if (dest != null) {
+                    val dM0 = GpxNav.haversineM(loc.latitude, loc.longitude, dest.lat, dest.lon)
+                    DashTelemetry.setRoute(GpxNav.etaSeconds(dM0, loc.speed), dM0)
+                }
+            }
             if (prog != null && nav != null) {
                 dashLocal.setRouteDone(
                     nav.pointsDone(prog.nearestIndex).map { it.lat to it.lon },
@@ -2182,6 +2227,7 @@ class GpxDashUi(
                         if (voiceOn) voiceLocal.onJoinRoute(dir, prog.offTrackM, units)
                     }
                     turn != null -> {
+                        if (compact) DashTelemetry.setTurn(turn.dir, turn.distanceFromRiderM)
                         cueIcon.setImageResource(GpxNav.iconResFor(turn.dir))
                         cueDist.text = GpxNav.formatDistance(turn.distanceFromRiderM, units)
                         cueView.text = turn.roadName ?: maneuverWord(turn.dir)
@@ -2194,6 +2240,7 @@ class GpxDashUi(
                         if (voiceOn) voiceLocal.onProgress(prog, units, loc.speed)
                     }
                     else -> {
+                        if (compact) DashTelemetry.setTurn(GpxNav.TurnDir.CONTINUE, prog.remainM)
                         // On route, no turn ahead → show the run-in to the destination.
                         cueIcon.setImageResource(R.drawable.ic_man_arrive)
                         cueDist.text = GpxNav.formatDistance(prog.remainM, units)
@@ -2292,6 +2339,23 @@ class GpxDashUi(
                 chipSpeed.text = GpxNav.formatSpeed(speedKmhEarly, units)
                 chipSpeedUnit?.text = GpxNav.speedUnitLabel(units)
                 rideStats.onLocation(loc.latitude, loc.longitude, loc.speed)
+                if (compact) {
+                    val t = DashTelemetry
+                    // Only real GPS fixes count, aged by their own timestamp (the last-known
+                    // location handed over at start can be hours old).
+                    if (loc.provider == LocationManager.GPS_PROVIDER) {
+                        val ageMs = (SystemClock.elapsedRealtimeNanos() - loc.elapsedRealtimeNanos) / 1_000_000L
+                        t.fixAtElapsedMs = SystemClock.elapsedRealtime() - ageMs.coerceAtLeast(0L)
+                    }
+                    t.liveSpeedKmh = if (loc.hasSpeed()) speedKmhEarly else Float.NaN
+                    if (loc.hasSpeed() && speedKmhEarly > t.sessionMaxKmh && speedKmhEarly < 400f) {
+                        t.sessionMaxKmh = speedKmhEarly
+                    }
+                    t.sessionKm = rideStats.distanceM() / 1000.0
+                    t.sessionMovingSec = (rideStats.movingMs() / 1000L).toInt()
+                    t.altitudeM = if (loc.hasAltitude()) loc.altitude.toFloat() else Float.NaN
+                    t.headingDeg = telemetryHeading()
+                }
                 if (lapTimer.onFix(loc.latitude, loc.longitude, loc.time.takeIf { it > 0L }
                         ?: System.currentTimeMillis())
                 ) {
@@ -2421,7 +2485,8 @@ class GpxDashUi(
                 var subscribed = false
                 if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     lm.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER, 800L, 1.5f, listener, Looper.getMainLooper(),
+                        LocationManager.GPS_PROVIDER, 800L, if (compact) 0f else 1.5f, listener,
+                        Looper.getMainLooper(),
                     )
                     subscribed = true
                 }
@@ -2769,10 +2834,36 @@ class GpxDashUi(
                 }
             }
         }
+        if (compact) applyCompactChrome(hud, searchPill, speedChip)
         hud.requestLayout()
         bottom.requestLayout()
         fabs.requestLayout()
         speedChip?.requestLayout()
+    }
+
+    /**
+     * Stock 368G slot: the map is small, so drop the cards that repeat what [StockDashView] draws
+     * (turn card, speed chip, metrics row, search pill). The End-route bar and the quick buttons stay
+     * because the handlebar focus ring walks them.
+     */
+    private fun applyCompactChrome(hud: View, searchPill: View?, speedChip: View?) {
+        hud.visibility = View.GONE
+        searchPill?.visibility = View.GONE
+        speedChip?.visibility = View.GONE
+        // The ETA strip is drawn over the bottom of the map: park the End-route bar above it.
+        root.findViewById<View>(R.id.gpx_hud_bottom)?.let { b ->
+            val d = root.resources.displayMetrics.density
+            val lp = FrameLayout.LayoutParams(b.layoutParams as? FrameLayout.LayoutParams
+                ?: FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+            lp.width = ViewGroup.LayoutParams.WRAP_CONTENT
+            lp.gravity = Gravity.BOTTOM or Gravity.END
+            lp.setMargins(0, 0, (8 * d).toInt(), (54 * d).toInt())
+            b.layoutParams = lp
+            b.setPadding(0, 0, 0, 0)
+            b.background = null
+        }
+        root.findViewById<View>(R.id.gpx_metrics_row)?.visibility = View.GONE
+        root.findViewById<View>(R.id.gpx_status)?.visibility = View.GONE
     }
 
     fun release() {
