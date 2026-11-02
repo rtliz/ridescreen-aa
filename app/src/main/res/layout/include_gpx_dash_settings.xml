@@ -105,6 +105,15 @@
         android:alpha="0.7"
         android:textSize="11sp" />
 
+    <!-- Phone only: GpxDashUi hides it when projected to the bike. -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/gpx_dash_design_btn"
+        style="@style/Widget.OpenCfMoto.Segment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="@string/dash_design_open" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

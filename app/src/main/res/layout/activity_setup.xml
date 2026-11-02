@@ -195,6 +195,21 @@
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_dash_design"
+                    style="@style/Widget.OpenCfMoto.Button.Pill"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/dash_design_open" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/dash_design_applies_next"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
                 <!-- Quality -->
                 <TextView
                     android:layout_width="match_parent"

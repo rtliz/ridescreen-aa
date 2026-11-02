@@ -24,8 +24,9 @@ enum class RouteMode(val label: String) {
 }
 
 /**
- * Which dash screen the Map projects. AUTO picks the Zontes 368 "stock" look only on a 368 whose
- * panel is wide and short (1024×425); every other bike keeps the standard map chrome.
+ * Which dash screen the Map projects. STANDARD = the full-screen map HUD. STOCK_368 (shown as
+ * "Custom") = the custom design chosen in [MapPrefs.dashDesign]; AUTO uses it only on a Zontes 368
+ * whose panel is wide and short (1024×425). Stored by name under `dash_layout`; names never change.
  */
 enum class DashLayout { AUTO, STANDARD, STOCK_368 }
 
@@ -47,6 +48,7 @@ object MapPrefs {
     private const val KEY_AVOID_HIGHWAYS = "avoid_highways"
     private const val KEY_CIRCUIT_KM = "fun_circuit_km"
     private const val KEY_DASH_LAYOUT = "dash_layout"
+    private const val KEY_DASH_DESIGN = "dash_design"
 
     private fun prefs(ctx: Context) =
         ctx.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -159,8 +161,16 @@ object MapPrefs {
         prefs(ctx).edit().putString(KEY_DASH_LAYOUT, layout.name).apply()
     }
 
+    /** Custom dash design used when [useStock368] is true. Stored by [DashDesign.id]. */
+    fun dashDesign(ctx: Context): DashDesign =
+        DashDesign.fromId(prefs(ctx).getString(KEY_DASH_DESIGN, null))
+
+    fun setDashDesign(ctx: Context, design: DashDesign) {
+        prefs(ctx).edit().putString(KEY_DASH_DESIGN, design.id).apply()
+    }
+
     /**
-     * True when the Map should use the Zontes 368G stock-style screen on a canvas of [w]×[h] px.
+     * True when the Map should use the custom dash design ([dashDesign]) on a canvas of [w]×[h] px.
      * AUTO needs a 368 and a canvas at least 2.2:1 (and [autoPicks], false for the phone preview); STOCK_368 forces it (also for the phone preview).
      */
     fun useStock368(ctx: Context, w: Int, h: Int, autoPicks: Boolean = true): Boolean = when (dashLayout(ctx)) {

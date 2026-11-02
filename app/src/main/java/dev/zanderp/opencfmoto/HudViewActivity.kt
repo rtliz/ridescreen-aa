@@ -47,7 +47,7 @@ class HudViewActivity : AppCompatActivity() {
     private var gpxPreview = false
     private var gpxUi: GpxDashUi? = null
     /** The Stock 368G screen when the preview uses it (null = standard map chrome). */
-    private var stockScreen: Stock368Screen? = null
+    private var stockScreen: DashScreen? = null
     private var boundSessionKey: String? = null
     private lateinit var insetsController: WindowInsetsControllerCompat
 
@@ -204,8 +204,8 @@ class HudViewActivity : AppCompatActivity() {
         gpxHost.removeAllViews()
         val dm = resources.displayMetrics
         val stock = if (MapPrefs.useStock368(this, dm.widthPixels, dm.heightPixels, autoPicks = false)) {
-            try { Stock368Screen.inflate(this) } catch (e: Exception) {
-                LogBus.log("[HUD] Stock 368G inflate failed, using standard: $e"); null
+            try { DashScreen.inflate(this, MapPrefs.dashDesign(this)) } catch (e: Exception) {
+                LogBus.log("[HUD] dash design inflate failed, using standard: $e"); null
             }
         } else null
         val root = try {
@@ -238,6 +238,7 @@ class HudViewActivity : AppCompatActivity() {
         val ui = GpxDashUi(
             this, root, { LogBus.log(it) }, isAlive = { !isFinishing && gpxPreview },
             compact = stock != null,
+            mapVisible = stock?.showsMap ?: true,
         )
         val ok = try {
             ui.bind()
@@ -278,7 +279,7 @@ class HudViewActivity : AppCompatActivity() {
         LogBus.log("[HUD] Map preview bound (${GpxSession.mode} '${GpxSession.trackName}')")
     }
 
-    /** Size the Stock 368G root to the largest 1024:425 rectangle that fits [w]×[h]. */
+    /** Size the custom dash root to the largest 1024:425 rectangle that fits [w]×[h]. */
     private fun fitStockScreen(w: Int, h: Int) {
         val root = stockScreen?.root ?: return
         if (w <= 0 || h <= 0) return

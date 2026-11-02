@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bike dash screen for one DashDesign (DashScreen.inflate): chrome drawn by dash_view (LIVE),
+     the map (presentation_gpx) in dash_map_slot, cards over the map by dash_overlay (OVERLAY).
+     Slot position/size are set from code once the view knows its measured size. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dash_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#07090B">
+
+    <dev.zanderp.opencfmoto.DashDesignView
+        android:id="@+id/dash_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/dash_map_slot"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="top|start" />
+
+    <!-- Cards over the map; not clickable, so touches reach the map. -->
+    <dev.zanderp.opencfmoto.DashDesignView
+        android:id="@+id/dash_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:focusable="false" />
+</FrameLayout>

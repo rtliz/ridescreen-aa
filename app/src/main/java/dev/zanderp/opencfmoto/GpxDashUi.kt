@@ -51,10 +51,16 @@ class GpxDashUi(
     /** True when this dash is projected to the bike HUD: hide the phone-only back/Hub chrome. */
     private val projected: Boolean = false,
     /**
-     * True when this map sits in the centre slot of the "Stock 368G" screen ([StockDashView]):
+     * True when this map sits in the centre slot of a custom dash design ([DashScreen]):
      * its own speed/ETA/search chrome is hidden and live values are published to [DashTelemetry].
      */
     private val compact: Boolean = false,
+    /**
+     * False for a dash design without a map ([DashDesign.showsMap]): the map stays bound (location,
+     * route, turn cues still feed [DashTelemetry]) but its slot is hidden, so the engine is never
+     * resumed and draws nothing.
+     */
+    private val mapVisible: Boolean = true,
 ) {
     private val main = Handler(Looper.getMainLooper())
     private var dash: DashMapEngine? = null
@@ -140,7 +146,7 @@ class GpxDashUi(
         val dashLocal = DashMapEngine(context, mapHost).also { dash = it }
         dashLocal.setBuildings3d(buildings3d)
         dashLocal.onCreate(null)
-        dashLocal.onResume()
+        if (mapVisible) dashLocal.onResume() else log("[GPX] map hidden by dash design — engine not resumed")
 
         val titleView = root.findViewById<TextView>(R.id.gpx_title)
         val statusView = root.findViewById<TextView>(R.id.gpx_status)
@@ -1624,6 +1630,14 @@ class GpxDashUi(
         fun wireSeg(id: Int, action: () -> Unit) {
             root.findViewById<MaterialButton>(id)?.setOnClickListener { action() }
         }
+        // Design picker is a phone activity: only offered when this chrome runs on the phone.
+        root.findViewById<View>(R.id.gpx_dash_design_btn)?.let { b ->
+            if (projected) {
+                b.visibility = View.GONE
+            } else {
+                b.setOnClickListener { DashDesignActivity.start(context) }
+            }
+        }
         wireSeg(R.id.gpx_layout_auto) {
             MapPrefs.setDashLayout(context, DashLayout.AUTO)
             refreshSettingsLabels()
@@ -2227,7 +2241,7 @@ class GpxDashUi(
                         if (voiceOn) voiceLocal.onJoinRoute(dir, prog.offTrackM, units)
                     }
                     turn != null -> {
-                        if (compact) DashTelemetry.setTurn(turn.dir, turn.distanceFromRiderM)
+                        if (compact) DashTelemetry.setTurn(turn.dir, turn.distanceFromRiderM, turn.roadName)
                         cueIcon.setImageResource(GpxNav.iconResFor(turn.dir))
                         cueDist.text = GpxNav.formatDistance(turn.distanceFromRiderM, units)
                         cueView.text = turn.roadName ?: maneuverWord(turn.dir)
@@ -2842,7 +2856,7 @@ class GpxDashUi(
     }
 
     /**
-     * Stock 368G slot: the map is small, so drop the cards that repeat what [StockDashView] draws
+     * Stock 368G slot: the map is small, so drop the cards that repeat what the dash design ([DashRenderer]) draws
      * (turn card, speed chip, metrics row, search pill). The End-route bar and the quick buttons stay
      * because the handlebar focus ring walks them.
      */

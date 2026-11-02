@@ -11,21 +11,11 @@ import android.os.SystemClock
 import java.util.TimeZone
 
 /**
- * Everything the "Stock 368G" dash ([StockDashView]) shows, in one mutable holder of primitives so
- * the 4 Hz redraw never allocates. All of it comes from the phone (GPS, battery, Bluetooth, the app's
- * own trip log); a value that is unknown stays NaN / -1 and the view shows "--" or hides it. Nothing
- * here is read from the bike. Main thread only.
- *
- * [GpxDashUi] writes the "raw" fields (GPS, heading, turn cue); [refresh] derives the rest.
+ * The values a dash design shows ([DashRenderer]), as plain mutable primitives so a redraw never
+ * allocates. Unknown = NaN / -1 / null: the renderer shows "--" (or hides it, see each field).
+ * [DashTelemetry] is the live instance; [DashSamples.preview] is a fixed sample for the picker.
  */
-object DashTelemetry {
-    // ---- raw, written by GpxDashUi on each GPS fix / progress update
-    @JvmField var liveSpeedKmh = Float.NaN
-    @JvmField var fixAtElapsedMs = 0L
-    @JvmField var sessionMaxKmh = 0f
-    @JvmField var sessionKm = 0.0
-    @JvmField var sessionMovingSec = 0
-
+open class DashValues {
     // ---- shown values (NaN / -1 = unknown)
     @JvmField var speedKmh = Float.NaN
     @JvmField var maxSpeedKmh = Float.NaN
@@ -55,6 +45,47 @@ object DashTelemetry {
     @JvmField var cardMeters = -1
     /** Local time as minutes since midnight. */
     @JvmField var clockMinute = -1
+    /** Road of the next turn (OSRM steps only); null = unknown, hide it. */
+    @JvmField var nextRoad: String? = null
+
+    // ---- vehicle sensors. No source exists yet (the bike sends none to the phone, see
+    // docs/RE-VEHICLE-TELEMETRY.md); a future BLE TPMS sensor / OBD adapter will write them.
+    // Null = no sensor: renderers hide the element entirely (no "--").
+    @JvmField var tyreFrontBar: Float? = null
+    @JvmField var tyreRearBar: Float? = null
+    @JvmField var tyreFrontC: Float? = null
+    @JvmField var tyreRearC: Float? = null
+    @JvmField var coolantC: Float? = null
+
+    // ---- derived extras (see DashExtra). NaN = unknown. Fuel figures need the maintenance book.
+    /** Trip km ÷ moving time; NaN under a minute of riding. */
+    @JvmField var avgSpeedKmh = Float.NaN
+    /** Average km/L from full-to-full refuels; NaN with fewer than 2 usable fills. */
+    @JvmField var fuelKmPerL = Float.NaN
+    /** App km since the last logged refuel + the live trip; NaN when no refuel is logged. */
+    @JvmField var kmSinceRefuel = Float.NaN
+    /** Tank size × km/L − km since refuel; NaN unless a tank size is set and km/L is known. */
+    @JvmField var rangeKm = Float.NaN
+
+    /** True when at least one tyre or coolant value is known. */
+    fun hasVehicleSensors(): Boolean =
+        tyreFrontBar != null || tyreRearBar != null || tyreFrontC != null || tyreRearC != null || coolantC != null
+}
+
+/**
+ * Everything the custom dash designs show, live. All of it comes from the phone (GPS, battery,
+ * Bluetooth, the app's own trip log); a value that is unknown stays NaN / -1 and the view shows "--"
+ * or hides it. Nothing here is read from the bike. Main thread only.
+ *
+ * [GpxDashUi] writes the "raw" fields (GPS, heading, turn cue); [refresh] derives the rest.
+ */
+object DashTelemetry : DashValues() {
+    // ---- raw, written by GpxDashUi on each GPS fix / progress update
+    @JvmField var liveSpeedKmh = Float.NaN
+    @JvmField var fixAtElapsedMs = 0L
+    @JvmField var sessionMaxKmh = 0f
+    @JvmField var sessionKm = 0.0
+    @JvmField var sessionMovingSec = 0
 
     private var bookKm = Double.NaN
     private var bookAt = 0L
@@ -66,6 +97,11 @@ object DashTelemetry {
     private var receiverUsers = 0
     private var batteryReceiver: BroadcastReceiver? = null
     private var tz: TimeZone = TimeZone.getDefault()
+    // Fuel: recomputed only when the book changed (bind, trip saved, refuel logged), not per tick.
+    private var fuelSig = Long.MIN_VALUE
+    private var bookAppKm = 0.0
+    private var lastFuelAppKm = Double.NaN
+    private var tankLiters = Float.NaN
 
     /** New dash session: forget the previous ride's maximum and cue. */
     fun reset() {
@@ -85,6 +121,8 @@ object DashTelemetry {
         lastLiveKm = 0.0
         routeActive = false
         cardDir = 0
+        nextRoad = null
+        fuelSig = Long.MIN_VALUE
         tz = TimeZone.getDefault()
     }
 
@@ -104,10 +142,12 @@ object DashTelemetry {
     fun clearRoute() {
         routeActive = false
         cardDir = 0
+        nextRoad = null
     }
 
     /** Called by [GpxDashUi.applyProgress]: only a plain left/right turn lights an arrow. */
-    fun setTurn(dir: GpxNav.TurnDir?, meters: Double) {
+    fun setTurn(dir: GpxNav.TurnDir?, meters: Double, road: String? = null) {
+        nextRoad = if (dir == null) null else road?.takeIf { it.isNotBlank() }
         cardDir = when (dir) {
             null -> 0
             GpxNav.TurnDir.LEFT, GpxNav.TurnDir.SHARP_LEFT, GpxNav.TurnDir.SLIGHT_LEFT -> 1
@@ -200,7 +240,21 @@ object DashTelemetry {
             val b = Maintenance.load(ctx)
             bookKm = b.odometer ?: b.appKm
             odometerFromBook = b.odometer != null
+            tankLiters = DashPrefs.tankLiters(ctx) ?: Float.NaN
+            val sig = b.log.size * 1_000_003L + java.lang.Double.doubleToLongBits(b.appKm)
+            if (sig != fuelSig) {
+                fuelSig = sig
+                bookAppKm = b.appKm
+                val l100 = Maintenance.consumption(b)?.first
+                fuelKmPerL = if (l100 != null && l100 > 0.0) (100.0 / l100).toFloat() else Float.NaN
+                lastFuelAppKm = b.log.filter { it.kind == "fuel" }.maxByOrNull { it.at }?.km ?: Double.NaN
+            }
         }
+        kmSinceRefuel = if (lastFuelAppKm.isNaN()) Float.NaN
+        else (bookAppKm + liveKm - lastFuelAppKm).coerceAtLeast(0.0).toFloat()
+        rangeKm = if (tankLiters.isNaN() || fuelKmPerL.isNaN() || kmSinceRefuel.isNaN()) Float.NaN
+        else (tankLiters * fuelKmPerL - kmSinceRefuel).coerceAtLeast(0f)
+        avgSpeedKmh = if (tripKm.isNaN() || rideSeconds < 60) Float.NaN else tripKm * 3600f / rideSeconds
         lastLiveKm = liveKm
         var odo = bookKm + liveKm
         if (holding) {

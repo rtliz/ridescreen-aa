@@ -275,6 +275,7 @@ class GpxActivity : AppCompatActivity() {
             MapPrefs.setUnits(this, MapUnits.IMPERIAL)
             refreshSettingsUi()
         }
+        findViewById<MaterialButton>(R.id.gpx_dash_design_btn).setOnClickListener { DashDesignActivity.start(this) }
         findViewById<MaterialButton>(R.id.gpx_layout_auto).setOnClickListener {
             MapPrefs.setDashLayout(this, DashLayout.AUTO)
             refreshSettingsUi()
