@@ -25,14 +25,26 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/controls_controls"
-            android:textColor="@color/text_primary"
-            android:textSize="26sp"
-            android:textStyle="bold" />
+            android:gravity="center_vertical"
+            android:minHeight="56dp"
+            android:orientation="horizontal"
+            android:paddingTop="4dp">
+
+            <ImageButton
+                android:id="@+id/scr_back"
+                style="@style/Scr.Back" />
+
+            <TextView
+                style="@style/Scr.BarTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="12dp"
+                android:text="@string/controls_controls" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -47,7 +59,7 @@
         <!-- ===== Navigate to… ===== -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_nav"
-            style="@style/Card.OpenCfMoto"
+            style="@style/Scr.CardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp">
@@ -86,7 +98,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_nav_go"
-                    style="@style/Widget.OpenCfMoto.Segment"
+                    style="@style/Scr.Btn.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -97,7 +109,7 @@
         <!-- ===== Map theme ===== -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_theme"
-            style="@style/Card.OpenCfMoto"
+            style="@style/Scr.CardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp">
@@ -134,7 +146,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/theme_auto"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
@@ -143,7 +155,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/theme_day"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="4dp"
@@ -152,7 +164,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/theme_night"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
@@ -165,7 +177,7 @@
         <!-- ===== Speed-compensated volume ===== -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_speed_volume"
-            style="@style/Card.OpenCfMoto"
+            style="@style/Scr.CardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp">
@@ -201,7 +213,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/spdvol_off"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="3dp"
@@ -210,7 +222,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/spdvol_low"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="3dp"
@@ -219,7 +231,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/spdvol_medium"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="3dp"
@@ -228,7 +240,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/spdvol_high"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="3dp"
@@ -326,7 +338,7 @@
         <!-- ===== On-screen pad ===== -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_pad"
-            style="@style/Card.OpenCfMoto"
+            style="@style/Scr.CardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp">
@@ -439,7 +451,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_knob_back"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Pad"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
@@ -448,7 +460,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_dpad_up"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Pad"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="4dp"
@@ -457,7 +469,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_knob_fwd"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Pad"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
@@ -475,7 +487,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_dpad_left"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Pad"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
@@ -484,7 +496,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_select"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Pad"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="4dp"
@@ -493,7 +505,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_dpad_right"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Pad"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
@@ -516,7 +528,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_dpad_down"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Pad"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="4dp"
@@ -539,7 +551,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_back"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Pad"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
@@ -548,7 +560,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_home"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Pad"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="4dp"
@@ -557,7 +569,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_assistant"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Pad"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
@@ -570,7 +582,7 @@
         <!-- ===== Handlebar buttons ===== -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_handlebar"
-            style="@style/Card.OpenCfMoto"
+            style="@style/Scr.CardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp">
@@ -620,7 +632,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_customize"
-                    style="@style/Widget.OpenCfMoto.Segment"
+                    style="@style/Scr.Btn.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"

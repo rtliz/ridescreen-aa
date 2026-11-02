@@ -53,11 +53,13 @@ class TripsListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_trips)
+        HomeNav.attach(this, HomeNav.Tab.TRIPS) // redesign: 5-tab bottom bar
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.trips_root)) { v, insets ->
             val b = insets.getInsets(SafeInsets.BARS)
             v.setPadding(b.left, b.top, b.right, b.bottom)
             insets
         }
+        ScreenUi.bindBack(this)
         container = findViewById(R.id.trips_container)
         empty = findViewById(R.id.trips_empty)
         dayLabel = findViewById(R.id.trips_day_label)
@@ -189,9 +191,13 @@ class TripsListActivity : AppCompatActivity() {
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
             ).apply { topMargin = dp(10) }
-            radius = dp(18).toFloat()
+            radius = dp(16).toFloat()
+            cardElevation = 0f
+            strokeWidth = dp(1)
+            strokeColor = ContextCompat.getColor(this@TripsListActivity, R.color.outline)
             setCardBackgroundColor(ContextCompat.getColor(this@TripsListActivity, R.color.surface))
-            setContentPadding(dp(16), dp(14), dp(16), dp(14))
+            setContentPadding(dp(14), dp(14), dp(14), dp(14))
+            minimumHeight = dp(56)
             isClickable = true
             setOnClickListener { TripMapActivity.start(this@TripsListActivity, trip.id) }
             setOnLongClickListener { confirmDelete(trip); true }
@@ -244,7 +250,7 @@ class TripsListActivity : AppCompatActivity() {
         col.addView(TextView(this).apply {
             text = trip.timeRangeText()
             setTextColor(ContextCompat.getColor(this@TripsListActivity, R.color.text_primary))
-            textSize = 17f
+            textSize = 18f
             setTypeface(typeface, android.graphics.Typeface.BOLD)
         })
 
@@ -267,9 +273,9 @@ class TripsListActivity : AppCompatActivity() {
             ).apply { topMargin = dp(8) }
         }
         actions.addView(
-            MaterialButton(this, null, com.google.android.material.R.attr.materialButtonOutlinedStyle).apply {
+            smallButton().apply {
                 text = getString(R.string.share_button)
-                textSize = 13f
+                textSize = 14f
                 isSingleLine = true
                 setOnClickListener { RideShare.shareTrip(this@TripsListActivity, trip) }
                 // v2.2: two equal halves, lined up with the full-width 🎬 Vídeo row below.
@@ -278,9 +284,9 @@ class TripsListActivity : AppCompatActivity() {
             },
         )
         actions.addView(
-            MaterialButton(this, null, com.google.android.material.R.attr.materialButtonOutlinedStyle).apply {
+            smallButton().apply {
                 text = getString(R.string.trips_export_gpx)
-                textSize = 13f
+                textSize = 14f
                 isSingleLine = true
                 setOnClickListener { exportGpx(trip) }
                 layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
@@ -288,9 +294,9 @@ class TripsListActivity : AppCompatActivity() {
         )
         // 🎬 Trip video: always here; shows the clip count (gold) when the gallery has videos
         // recorded during this trip. Counted in the background, only if video access is granted.
-        val videoBtn = MaterialButton(this, null, com.google.android.material.R.attr.materialButtonOutlinedStyle).apply {
+        val videoBtn = smallButton().apply {
             text = getString(R.string.tv_button)
-            textSize = 13f
+            textSize = 14f
             setOnClickListener { TripVideoActivity.start(this@TripsListActivity, trip.id) }
         }
         // Its own full-width row: three buttons didn't fit side by side (the third wrapped onto two
@@ -375,15 +381,15 @@ class TripsListActivity : AppCompatActivity() {
         }
         box.addView(TextView(this).apply {
             text = label.uppercase()
-            setTextColor(ContextCompat.getColor(this@TripsListActivity, R.color.text_secondary))
-            textSize = 10f
+            setTextColor(ContextCompat.getColor(this@TripsListActivity, R.color.status_idle))
+            textSize = 11f
             gravity = Gravity.START
         })
         box.addView(TextView(this).apply {
             text = value
             setTextColor(ContextCompat.getColor(this@TripsListActivity, R.color.text_primary))
-            textSize = 15f
-            setTypeface(typeface, android.graphics.Typeface.BOLD)
+            textSize = 18f
+            typeface = android.graphics.Typeface.create("sans-serif-condensed", android.graphics.Typeface.BOLD)
         })
         return box
     }
@@ -434,6 +440,19 @@ class TripsListActivity : AppCompatActivity() {
             }
             .setNegativeButton(R.string.dash_cancel, null)
             .show()
+    }
+
+    /** Outlined 48 dp button in the redesign look (visual only). */
+    private fun smallButton(): MaterialButton = MaterialButton(this).apply {
+        backgroundTintList = android.content.res.ColorStateList.valueOf(ContextCompat.getColor(this@TripsListActivity, R.color.surface))
+        strokeColor = android.content.res.ColorStateList.valueOf(ContextCompat.getColor(this@TripsListActivity, R.color.outline))
+        strokeWidth = dp(1)
+        cornerRadius = dp(14)
+        minHeight = dp(48)
+        insetTop = 0
+        insetBottom = 0
+        isAllCaps = false
+        setTextColor(ContextCompat.getColor(this@TripsListActivity, R.color.text_primary))
     }
 
     private fun dp(v: Int): Int = (v * resources.displayMetrics.density).toInt()

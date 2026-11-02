@@ -265,6 +265,41 @@ class SetupActivity : AppCompatActivity() {
             markSeen(this)
             finish()
         }
+
+        applySection()
+    }
+
+    /**
+     * Settings-hub mode: with a "section" extra only the cards tagged "sec:<section>" are shown
+     * (handlers above are untouched, the hidden views simply stay GONE) and the optional focus view
+     * is scrolled into place. Without the extra this is the full onboarding page.
+     */
+    private fun applySection() {
+        val section = intent.getStringExtra(EXTRA_SECTION) ?: return
+        val content = findViewById<android.widget.LinearLayout>(R.id.setup_content)
+        for (i in 0 until content.childCount) {
+            val v = content.getChildAt(i)
+            val tag = v.tag as? String ?: continue
+            if (tag.startsWith("sec:")) {
+                v.visibility = if (tag == "sec:$section") android.view.View.VISIBLE else android.view.View.GONE
+            }
+        }
+        findViewById<TextView>(R.id.setup_title).text = intent.getStringExtra(EXTRA_TITLE)
+        findViewById<TextView>(R.id.setup_subtitle).visibility = android.view.View.GONE
+        val focusId = intent.getIntExtra(EXTRA_FOCUS, 0)
+        if (focusId != 0) {
+            val target = findViewById<android.view.View>(focusId)
+            val scroll = findViewById<android.widget.ScrollView>(R.id.setup_root)
+            scroll.post {
+                var y = 0
+                var p: android.view.View? = target
+                while (p != null && p !== scroll) {
+                    y += p.top
+                    p = p.parent as? android.view.View
+                }
+                scroll.scrollTo(0, (y - 16 * resources.displayMetrics.density.toInt()).coerceAtLeast(0))
+            }
+        }
     }
 
     /** Write the portable settings JSON and open the system share sheet (Discord, Drive, …). */
@@ -824,6 +859,20 @@ class SetupActivity : AppCompatActivity() {
 
         fun start(ctx: android.content.Context) {
             ctx.startActivity(Intent(ctx, SetupActivity::class.java))
+        }
+
+        private const val EXTRA_SECTION = "section"
+        private const val EXTRA_TITLE = "section_title"
+        private const val EXTRA_FOCUS = "section_focus"
+
+        /** Opens only one settings section (used by [SettingsHubActivity]). */
+        fun startSection(ctx: android.content.Context, section: String, title: String, focusId: Int = 0) {
+            ctx.startActivity(
+                Intent(ctx, SetupActivity::class.java)
+                    .putExtra(EXTRA_SECTION, section)
+                    .putExtra(EXTRA_TITLE, title)
+                    .putExtra(EXTRA_FOCUS, focusId)
+            )
         }
     }
 }

@@ -144,6 +144,7 @@ class GpxActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_gpx)
+        HomeNav.attach(this, HomeNav.Tab.MAP) // redesign: 5-tab bottom bar
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.gpx_activity_root)) { v, insets ->
             val b = insets.getInsets(SafeInsets.BARS)
             v.setPadding(b.left + 16, b.top + 16, b.right + 16, b.bottom + 16)

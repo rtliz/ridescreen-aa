@@ -39,14 +39,18 @@ class ParkingCameraActivity : AppCompatActivity() {
             setText(R.string.park_cam_hint)
             setTextColor(Color.WHITE)
             textSize = 15f
-            setShadowLayer(6f, 0f, 2f, Color.BLACK)
             gravity = Gravity.CENTER
-            setPadding((20 * dp).toInt(), (48 * dp).toInt(), (20 * dp).toInt(), 0)
-        }, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP))
-        val shutter = TextView(this).apply {
-            text = "📸"
-            textSize = 34f
-            gravity = Gravity.CENTER
+            minHeight = (48 * dp).toInt()
+            setBackgroundResource(R.drawable.bg_scr_chip)
+            setPadding((16 * dp).toInt(), (8 * dp).toInt(), (16 * dp).toInt(), (8 * dp).toInt())
+        }, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.CENTER_HORIZONTAL).apply {
+            topMargin = (48 * dp).toInt(); marginStart = (16 * dp).toInt(); marginEnd = (16 * dp).toInt()
+        })
+        val shutter = android.widget.ImageView(this).apply {
+            setImageResource(R.drawable.ic_scr_photo)
+            setColorFilter(ContextCompat.getColor(this@ParkingCameraActivity, R.color.on_brand))
+            scaleType = android.widget.ImageView.ScaleType.CENTER
+            contentDescription = getString(R.string.scr_shutter)
             background = android.graphics.drawable.GradientDrawable().apply {
                 shape = android.graphics.drawable.GradientDrawable.OVAL
                 setColor(Color.WHITE)
@@ -61,10 +65,13 @@ class ParkingCameraActivity : AppCompatActivity() {
             setText(android.R.string.cancel)
             setTextColor(Color.WHITE)
             textSize = 16f
-            setPadding((24 * dp).toInt(), (16 * dp).toInt(), (24 * dp).toInt(), (16 * dp).toInt())
+            gravity = Gravity.CENTER
+            minHeight = (48 * dp).toInt()
+            setBackgroundResource(R.drawable.bg_scr_chip)
+            setPadding((24 * dp).toInt(), 0, (24 * dp).toInt(), 0)
             setOnClickListener { setResult(RESULT_CANCELED); finish() }
         }, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM or Gravity.START).apply {
-            bottomMargin = (64 * dp).toInt()
+            bottomMargin = (66 * dp).toInt(); marginStart = (16 * dp).toInt()
         })
         setContentView(root)
 

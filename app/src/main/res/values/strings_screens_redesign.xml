@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="scr_back">Back</string>
+    <string name="scr_trips_title">My trips</string>
+    <string name="scr_year">Year review</string>
+    <string name="scr_all_map">All routes map</string>
+    <string name="scr_traffic">Traffic lights</string>
+    <string name="scr_week">This week</string>
+    <string name="scr_import">Import</string>
+    <string name="scr_trips_empty_hint">Rides are recorded automatically while connected</string>
+    <string name="scr_shutter">Take photo</string>
+    <string name="scr_remove">Remove</string>
+</resources>

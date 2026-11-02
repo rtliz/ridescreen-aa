@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Settings cards: tighter than the shared card, 16dp corners as in the approved mockup. -->
+    <style name="Card.Settings" parent="Card.OpenCfMoto">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="contentPadding">14dp</item>
+    </style>
+</resources>

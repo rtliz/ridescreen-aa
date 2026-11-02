@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Scr" />
+    <!-- Screens redesign: shared pieces for the secondary screens (trips, garage, parking, fuel...). -->
+    <style name="Scr.Title">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="Scr.BarTitle">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    <style name="Scr.T2">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="Scr.T3">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="Scr.Sm">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineSpacingExtra">2dp</item>
+    </style>
+    <style name="Scr.Label">
+        <item name="android:textColor">@color/status_idle</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:letterSpacing">0.04</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingStart">2dp</item>
+    </style>
+    <style name="Scr.Num">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+    <style name="Scr.Card">
+        <item name="android:background">@drawable/bg_scr_card</item>
+        <item name="android:padding">14dp</item>
+    </style>
+    <style name="Scr.Back">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@drawable/bg_scr_back</item>
+        <item name="android:src">@drawable/ic_scr_back</item>
+        <item name="android:tint">@color/text_primary</item>
+        <item name="android:scaleType">center</item>
+        <item name="android:contentDescription">@string/scr_back</item>
+    </style>
+
+    <style name="Scr.Btn" parent="Widget.Material3.Button">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="backgroundTint">@color/surface</item>
+        <item name="strokeColor">@color/outline</item>
+        <item name="strokeWidth">1.5dp</item>
+        <item name="iconTint">@color/text_primary</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">8dp</item>
+        <item name="iconSize">20dp</item>
+    </style>
+    <style name="Scr.Btn.Primary">
+        <item name="android:minHeight">64dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/on_brand</item>
+        <item name="backgroundTint">@color/brand_orange</item>
+        <item name="strokeColor">@color/brand_orange</item>
+        <item name="iconTint">@color/on_brand</item>
+    </style>
+    <style name="Scr.Btn.Danger">
+        <item name="android:minHeight">64dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/scr_red_fill</item>
+        <item name="strokeColor">@color/scr_red_fill</item>
+        <item name="iconTint">@color/white</item>
+    </style>
+    <style name="Scr.Btn.Outline">
+        <item name="android:textColor">@color/brand_orange</item>
+        <item name="strokeColor">@color/brand_orange</item>
+        <item name="iconTint">@color/brand_orange</item>
+    </style>
+    <style name="Scr.Btn.Small">
+        <item name="android:minHeight">48dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="cornerRadius">14dp</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+    </style>
+    <style name="Scr.CardView" parent="Widget.Material3.CardView.Filled">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardBackgroundColor">@color/surface</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeColor">@color/outline</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="contentPadding">14dp</item>
+    </style>
+    <style name="Scr.CardView.Hl">
+        <item name="cardBackgroundColor">@color/scr_hl_bg</item>
+        <item name="strokeColor">@color/brand_orange</item>
+        <item name="strokeWidth">2dp</item>
+    </style>
+    <style name="Scr.StatLabel">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/status_idle</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:letterSpacing">0.04</item>
+    </style>
+    <style name="Scr.StatValue">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+    <style name="Scr.Btn.Pad">
+        <item name="android:minHeight">60dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="cornerRadius">14dp</item>
+        <item name="backgroundTint">@color/surface_high</item>
+    </style>
+</resources>

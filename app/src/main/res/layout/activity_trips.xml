@@ -7,205 +7,249 @@
     android:background="@color/bg"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingHorizontal="20dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="6dp">
-
-        <ImageView
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:contentDescription="@string/trips_trips"
-            android:src="@drawable/ic_speed"
-            android:tint="@color/brand_orange" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="10dp"
-            android:text="@string/trip_saved_trips"
-            android:textColor="@color/text_primary"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/trips_year"
-            style="@style/Widget.OpenCfMoto.Button.Pill"
-            android:layout_width="wrap_content"
-            android:layout_marginEnd="6dp"
-            android:text="@string/yir_button" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/trips_all_map"
-            style="@style/Widget.OpenCfMoto.Button.Pill"
-            android:layout_width="wrap_content"
-            android:text="@string/all_rides_button" />
-    </LinearLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/trips_traffic_lights"
-        style="@style/Widget.OpenCfMoto.Button.Pill"
-        android:layout_width="match_parent"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/tl_entry" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/trips_week"
-        style="@style/Widget.OpenCfMoto.Button.Pill"
-        android:layout_width="match_parent"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/week_button" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/trips_import"
-        style="@style/Widget.OpenCfMoto.Button.Pill"
-        android:layout_width="match_parent"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/trips_import" />
-
-    <!-- Trip logging is off: say so where people look for their rides, with a one-tap fix. -->
-    <LinearLayout
-        android:id="@+id/trips_logging_off"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/bg_stat_tile"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/trips_logging_off"
-            android:textColor="@color/text_primary"
-            android:textSize="13sp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/trips_logging_enable"
-            style="@style/Widget.OpenCfMoto.Button.Pill"
-            android:layout_width="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/trips_logging_enable" />
-    </LinearLayout>
-
-    <!-- Personal records (RideScreen AA v2). -->
-    <TextView
-        android:id="@+id/trips_records"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="6dp"
-        android:background="@drawable/bg_stat_tile"
-        android:padding="12dp"
-        android:textColor="@color/text_primary"
-        android:textSize="13sp"
-        android:visibility="gone" />
-
-    <!-- Day navigator (calendar-style). -->
-    <LinearLayout
-        android:id="@+id/trips_day_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingHorizontal="12dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/trips_day_prev"
-            style="@style/Widget.Material3.Button.IconButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="@string/trips_previous_day"
-            android:text="@string/trips_str"
-            android:textColor="@color/text_primary"
-            android:textSize="28sp" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:paddingHorizontal="4dp">
-
-            <TextView
-                android:id="@+id/trips_day_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/text_primary"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/trips_day_summary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/text_secondary"
-                android:textSize="13sp" />
-        </LinearLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/trips_day_next"
-            style="@style/Widget.Material3.Button.IconButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="@string/trips_next_day"
-            android:text="@string/trips_str_2"
-            android:textColor="@color/text_primary"
-            android:textSize="28sp" />
-    </LinearLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/trips_today"
-        style="@style/Widget.Material3.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/trips_today"
-        android:textColor="@color/brand_orange"
-        android:visibility="gone"
-        app:rippleColor="@color/brand_orange" />
-
-    <TextView
-        android:id="@+id/trips_empty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:gravity="center"
-        android:paddingHorizontal="32dp"
-        android:text="@string/trips_no_rides_this_day"
-        android:textColor="@color/text_secondary"
-        android:textSize="15sp"
-        android:lineSpacingExtra="4dp"
-        android:visibility="gone" />
-
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingHorizontal="16dp">
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:scrollbars="none">
 
         <LinearLayout
-            android:id="@+id/trips_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="16dp" />
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="24dp">
+
+            <!-- Header: back, title, import -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:minHeight="56dp"
+                android:orientation="horizontal"
+                android:paddingTop="4dp">
+
+                <ImageButton
+                    android:id="@+id/scr_back"
+                    style="@style/Scr.Back" />
+
+                <TextView
+                    style="@style/Scr.Title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="12dp"
+                    android:text="@string/scr_trips_title" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/trips_import"
+                    style="@style/Scr.Btn.Small"
+                    android:layout_width="wrap_content"
+                    android:text="@string/scr_import"
+                    app:icon="@drawable/ic_scr_upload" />
+            </LinearLayout>
+
+            <!-- Shortcuts -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/trips_week"
+                    style="@style/Scr.Btn.Small"
+                    android:layout_width="0dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:text="@string/scr_week"
+                    app:icon="@drawable/ic_scr_chart" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/trips_year"
+                    style="@style/Scr.Btn.Small"
+                    android:layout_width="0dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:text="@string/scr_year"
+                    app:icon="@drawable/ic_scr_calendar" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/trips_all_map"
+                    style="@style/Scr.Btn.Small"
+                    android:layout_width="0dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:text="@string/scr_all_map"
+                    app:icon="@drawable/ic_scr_map" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/trips_traffic_lights"
+                    style="@style/Scr.Btn.Small"
+                    android:layout_width="0dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:text="@string/scr_traffic"
+                    app:icon="@drawable/ic_scr_traffic" />
+            </LinearLayout>
+
+            <!-- Trip logging is off: say so where people look for their rides, with a one-tap fix. -->
+            <LinearLayout
+                android:id="@+id/trips_logging_off"
+                style="@style/Scr.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_scr_card_hl"
+                android:gravity="center_vertical"
+                android:minHeight="56dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_scr_warning"
+                    app:tint="@color/brand_orange" />
+
+                <TextView
+                    style="@style/Scr.Sm"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:text="@string/trips_logging_off"
+                    android:textColor="@color/text_primary" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/trips_logging_enable"
+                    style="@style/Scr.Btn.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/trips_logging_enable"
+                    android:textColor="@color/on_brand"
+                    app:backgroundTint="@color/brand_orange"
+                    app:strokeColor="@color/brand_orange" />
+            </LinearLayout>
+
+            <!-- Personal records (RideScreen AA v2). -->
+            <TextView
+                android:id="@+id/trips_records"
+                style="@style/Scr.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:minHeight="56dp"
+                android:gravity="center_vertical"
+                android:lineSpacingExtra="4dp"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <!-- Day navigator (calendar-style). -->
+            <LinearLayout
+                android:id="@+id/trips_day_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/trips_day_prev"
+                    style="@style/Scr.Btn"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/trips_previous_day"
+                    android:insetLeft="0dp"
+                    android:insetRight="0dp"
+                    android:minWidth="0dp"
+                    android:minHeight="48dp"
+                    android:padding="0dp"
+                    android:text="@string/trips_str"
+                    android:textSize="26sp"
+                    app:cornerRadius="14dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="4dp">
+
+                    <TextView
+                        android:id="@+id/trips_day_label"
+                        style="@style/Scr.T2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:id="@+id/trips_day_summary"
+                        style="@style/Scr.Sm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/trips_day_next"
+                    style="@style/Scr.Btn"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/trips_next_day"
+                    android:insetLeft="0dp"
+                    android:insetRight="0dp"
+                    android:minWidth="0dp"
+                    android:minHeight="48dp"
+                    android:padding="0dp"
+                    android:text="@string/trips_str_2"
+                    android:textSize="26sp"
+                    app:cornerRadius="14dp" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/trips_today"
+                style="@style/Scr.Btn.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:text="@string/trips_today"
+                android:textColor="@color/brand_orange"
+                android:visibility="gone"
+                app:strokeColor="@color/brand_orange" />
+
+            <!-- Empty state: icon + the message the code sets. -->
+            <TextView
+                android:id="@+id/trips_empty"
+                style="@style/Scr.Sm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:drawablePadding="12dp"
+                android:drawableTop="@drawable/ic_scr_route"
+                android:drawableTint="@color/status_idle"
+                android:gravity="center"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="24dp"
+                android:text="@string/trips_no_rides_this_day"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/trips_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
     </ScrollView>
 </LinearLayout>

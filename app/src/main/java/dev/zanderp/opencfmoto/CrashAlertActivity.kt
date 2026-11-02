@@ -45,7 +45,7 @@ class CrashAlertActivity : AppCompatActivity() {
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
-            setBackgroundColor(Color.rgb(170, 20, 20))
+            setBackgroundColor(androidx.core.content.ContextCompat.getColor(this@CrashAlertActivity, R.color.scr_alarm_bg))
             setPadding((24 * dp).toInt(), (48 * dp).toInt(), (24 * dp).toInt(), (48 * dp).toInt())
         }
         root.addView(TextView(this).apply {
@@ -54,28 +54,34 @@ class CrashAlertActivity : AppCompatActivity() {
             typeface = android.graphics.Typeface.DEFAULT_BOLD
         })
         count = TextView(this).apply {
-            textSize = 96f; setTextColor(Color.WHITE); gravity = Gravity.CENTER
-            typeface = android.graphics.Typeface.DEFAULT_BOLD
+            textSize = 120f; setTextColor(Color.WHITE); gravity = Gravity.CENTER
+            typeface = android.graphics.Typeface.create("sans-serif-condensed", android.graphics.Typeface.BOLD)
+            includeFontPadding = false
         }
         root.addView(count)
         info = TextView(this).apply {
             text = getString(R.string.crash_alert_info, CrashDetector.contacts(this@CrashAlertActivity).size)
-            textSize = 16f; setTextColor(Color.WHITE); gravity = Gravity.CENTER
-            setPadding(0, 0, 0, (24 * dp).toInt())
+            textSize = 18f; setTextColor(Color.WHITE); gravity = Gravity.CENTER
+            setPadding(0, (8 * dp).toInt(), 0, (24 * dp).toInt())
         }
         root.addView(info)
         okBtn = MaterialButton(this).apply {
             text = getString(R.string.crash_im_ok)
             textSize = 30f
-            setTextColor(Color.rgb(170, 20, 20))
+            setTextColor(androidx.core.content.ContextCompat.getColor(this@CrashAlertActivity, R.color.scr_alarm_bg))
             setBackgroundColor(Color.WHITE)
-            cornerRadius = (40 * dp).toInt()
+            cornerRadius = (20 * dp).toInt()
             setOnClickListener { CrashDetector.cancelAlarm(this@CrashAlertActivity, "phone") }
         }
         root.addView(okBtn, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (120 * dp).toInt()))
         sendBtn = MaterialButton(this, null, com.google.android.material.R.attr.materialButtonOutlinedStyle).apply {
             text = getString(R.string.crash_send_now)
             setTextColor(Color.WHITE)
+            textSize = 18f
+            minHeight = (64 * dp).toInt()
+            cornerRadius = (20 * dp).toInt()
+            strokeWidth = (2 * dp).toInt()
+            strokeColor = android.content.res.ColorStateList.valueOf(Color.WHITE)
             setOnClickListener { CrashDetector.sendNow(this@CrashAlertActivity) }
         }
         root.addView(sendBtn, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {

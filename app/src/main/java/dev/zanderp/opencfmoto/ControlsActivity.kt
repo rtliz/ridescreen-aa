@@ -69,6 +69,7 @@ class ControlsActivity : AppCompatActivity() {
             }
         })
 
+        ScreenUi.bindBack(this)
         // Navigate-to box.
         val nav = findViewById<EditText>(R.id.et_nav)
         findViewById<MaterialButton>(R.id.btn_nav_go).setOnClickListener {

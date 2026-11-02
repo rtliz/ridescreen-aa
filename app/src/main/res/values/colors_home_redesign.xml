@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Home redesign (mockups/app-redesign.html frames 1-2 and the bottom bar): the mockup tokens that
+     colors.xml doesn't have yet. Same dark/amber theme. -->
+<resources>
+    <color name="home_rd_bg2">#0E1114</color>
+    <color name="home_rd_divider">#20272D</color>
+    <color name="home_rd_muted">#9AA5AF</color>
+    <color name="home_rd_amber_soft">#2A2112</color>
+    <color name="home_rd_hl_bg">#1D1A12</color>
+    <color name="home_rd_ok_bg">#10190F</color>
+    <color name="home_rd_ok_border">#1F6B35</color>
+    <color name="home_rd_ok_text">#7FD48A</color>
+    <color name="home_rd_stop">#C9231F</color>
+</resources>

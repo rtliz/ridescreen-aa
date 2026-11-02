@@ -13,14 +13,26 @@
         android:paddingHorizontal="16dp"
         android:paddingBottom="24dp">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/res_match_panel_aspect"
-            android:textColor="@color/text_primary"
-            android:textSize="26sp"
-            android:textStyle="bold" />
+            android:gravity="center_vertical"
+            android:minHeight="56dp"
+            android:orientation="horizontal"
+            android:paddingTop="4dp">
+
+            <ImageButton
+                android:id="@+id/scr_back"
+                style="@style/Scr.Back" />
+
+            <TextView
+                style="@style/Scr.BarTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="12dp"
+                android:text="@string/res_match_panel_aspect" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -38,7 +50,7 @@
             android:orientation="horizontal">
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/match_auto"
-                style="@style/Widget.OpenCfMoto.Segment"
+                style="@style/Scr.Btn.Small"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
@@ -46,7 +58,7 @@
                 android:text="@string/controls_auto" />
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/match_off"
-                style="@style/Widget.OpenCfMoto.Segment"
+                style="@style/Scr.Btn.Small"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="4dp"
@@ -54,7 +66,7 @@
                 android:text="@string/res_off" />
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/match_manual"
-                style="@style/Widget.OpenCfMoto.Segment"
+                style="@style/Scr.Btn.Small"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
@@ -104,7 +116,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_custom_res_save"
-            style="@style/Widget.OpenCfMoto.Segment"
+            style="@style/Scr.Btn.Primary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -112,7 +124,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_custom_res_done"
-            style="@style/Widget.OpenCfMoto.Segment"
+            style="@style/Scr.Btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

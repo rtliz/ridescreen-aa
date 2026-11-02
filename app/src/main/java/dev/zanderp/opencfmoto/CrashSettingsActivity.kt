@@ -92,19 +92,18 @@ class CrashSettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val scroll = ScrollView(this).apply { setBackgroundColor(color(R.color.bg)) }
-        val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(20), dp(12), dp(20), dp(28)) }
+        val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(16), dp(8), dp(16), dp(28)) }
         scroll.addView(root)
-        root.addView(TextView(this).apply {
-            setText(R.string.crash_title)
-            textSize = 24f
-            setTextColor(color(R.color.text_primary))
-            typeface = ResourcesCompat.getFont(context, R.font.archivo_black)
-        })
+        root.addView(ScreenUi.header(this, getString(R.string.crash_title)))
         root.addView(body(getString(R.string.crash_how)))
 
         toggle = MaterialSwitch(this).apply {
             setText(R.string.crash_enable)
             setTextColor(color(R.color.text_primary))
+            textSize = 16f
+            setBackgroundResource(R.drawable.bg_scr_card)
+            setPadding(dp(14), dp(14), dp(14), dp(14))
+            minHeight = dp(64)
             isChecked = CrashDetector.enabled(this@CrashSettingsActivity)
             setOnCheckedChangeListener { _, on ->
                 CrashDetector.setEnabled(this@CrashSettingsActivity, on)
@@ -113,14 +112,20 @@ class CrashSettingsActivity : AppCompatActivity() {
             }
         }
         root.addView(toggle, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(12) })
-        status = body("")
-        root.addView(status)
+        status = body("").apply {
+            textSize = 15f
+            minHeight = dp(56)
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(14), dp(12), dp(14), dp(12))
+        }
+        root.addView(status, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(8) })
 
         root.addView(header(getString(R.string.crash_name_title)))
         root.addView(EditText(this).apply {
             setText(CrashDetector.riderName(this@CrashSettingsActivity))
             hint = getString(R.string.crash_name_hint)
             setTextColor(color(R.color.text_primary))
+            minHeight = dp(56)
             addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) { CrashDetector.setRiderName(this@CrashSettingsActivity, s?.toString().orEmpty()) }
                 override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
@@ -223,14 +228,26 @@ class CrashSettingsActivity : AppCompatActivity() {
         contactsBox.removeAllViews()
         if (list.isEmpty()) contactsBox.addView(body(getString(R.string.crash_no_contacts)))
         for (c in list) {
-            val row = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+            val row = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL
+                setBackgroundResource(R.drawable.bg_scr_card)
+                setPadding(dp(14), dp(6), dp(8), dp(6))
+                minimumHeight = dp(64)
+            }
             row.addView(TextView(this).apply {
                 text = "${c.name}\n${c.number}"
                 textSize = 15f
                 setTextColor(color(R.color.text_primary))
             }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
             row.addView(MaterialButton(this, null, com.google.android.material.R.attr.materialButtonOutlinedStyle).apply {
-                text = "✕"
+                text = ""
+                icon = ContextCompat.getDrawable(this@CrashSettingsActivity, R.drawable.ic_delete)
+                iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
+                iconPadding = 0
+                contentDescription = getString(R.string.scr_remove)
+                minWidth = dp(48)
+                minHeight = dp(48)
+                cornerRadius = dp(14)
                 setOnClickListener {
                     CrashDetector.setContacts(this@CrashSettingsActivity, CrashDetector.contacts(this@CrashSettingsActivity).filter { it.number != c.number })
                     refresh()
@@ -248,8 +265,13 @@ class CrashSettingsActivity : AppCompatActivity() {
         status.text = when {
             !CrashDetector.enabled(this) -> getString(R.string.crash_status_off)
             problems.isEmpty() -> getString(R.string.crash_status_ready)
-            else -> problems.joinToString("\n") { "⚠️ $it" }
+            else -> problems.joinToString("\n") { "• $it" }
         }
+        status.setBackgroundResource(when {
+            !CrashDetector.enabled(this) -> R.drawable.bg_scr_card
+            problems.isEmpty() -> R.drawable.bg_scr_card_ok
+            else -> R.drawable.bg_scr_card_hl
+        })
         status.setTextColor(color(if (CrashDetector.enabled(this) && problems.isEmpty()) R.color.status_live else R.color.text_secondary))
         status.setOnClickListener { if (problems.isNotEmpty()) requestNeeded() }
     }
@@ -275,23 +297,32 @@ class CrashSettingsActivity : AppCompatActivity() {
     }
 
     private fun header(s: String) = TextView(this).apply {
-        text = s; textSize = 16f
+        text = s; textSize = 18f
         setTextColor(color(R.color.text_primary))
         typeface = android.graphics.Typeface.DEFAULT_BOLD
-        setPadding(0, dp(18), 0, dp(4))
+        setPadding(dp(2), dp(22), 0, dp(4))
     }
 
     private fun body(s: String) = TextView(this).apply {
-        text = s; textSize = 13f
+        text = s; textSize = 14f
         setTextColor(color(R.color.text_secondary))
-        setPadding(0, dp(6), 0, 0)
+        setPadding(dp(2), dp(6), 0, 0)
     }
 
     private fun button(label: String, onClick: () -> Unit) =
         MaterialButton(this, null, com.google.android.material.R.attr.materialButtonOutlinedStyle).apply {
             text = label
             isAllCaps = false
+            minHeight = dp(56)
+            cornerRadius = dp(16)
+            insetTop = 0
+            insetBottom = 0
+            backgroundTintList = android.content.res.ColorStateList.valueOf(color(R.color.surface))
+            strokeColor = android.content.res.ColorStateList.valueOf(color(R.color.outline))
+            setTextColor(color(R.color.text_primary))
             setOnClickListener { onClick() }
+            layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                .apply { topMargin = dp(8) }
         }
 
     private fun color(id: Int) = ContextCompat.getColor(this, id)

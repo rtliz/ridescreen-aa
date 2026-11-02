@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Home redesign + 5-tab bottom bar + More screen (mockups/app-redesign.html frames 1, 2 and 23). -->
+<resources>
+    <string name="home_rd_tab_home">Home</string>
+    <string name="home_rd_tab_map">Map</string>
+    <string name="home_rd_tab_trips">Trips</string>
+    <string name="home_rd_tab_bike">My bike</string>
+    <string name="home_rd_tab_more">More</string>
+
+    <string name="home_rd_stop_projection">Stop projecting</string>
+    <string name="home_rd_unit_km">km</string>
+    <string name="home_rd_unit_kmh">km/h</string>
+    <string name="home_rd_stat_today">today</string>
+    <string name="home_rd_stat_max">top speed</string>
+    <string name="home_rd_add_bike">Add a bike</string>
+    <string name="home_rd_choose_bike">Choose bike</string>
+    <string name="home_rd_walk">Walk there</string>
+
+    <string name="home_rd_more_title">More</string>
+    <string name="home_rd_more_riding">Riding</string>
+    <string name="home_rd_more_bike">Bike</string>
+    <string name="home_rd_more_stats">Stats</string>
+    <string name="home_rd_more_app">App</string>
+
+    <string name="home_rd_more_controls">Controls and handlebar buttons</string>
+    <string name="home_rd_more_controls_sub">On-screen D-pad · button mapping · remote</string>
+    <string name="home_rd_more_hud">Dash view</string>
+    <string name="home_rd_more_hud_sub">What the bike is showing now</string>
+    <string name="home_rd_more_live">Share live route</string>
+    <string name="home_rd_more_live_sub">A private link others can follow</string>
+    <string name="home_rd_more_pax">Passenger mode</string>
+    <string name="home_rd_more_pax_sub">The pillion picks destination and music</string>
+    <string name="home_rd_more_trip">Current trip</string>
+    <string name="home_rd_more_trip_sub">Live stats of this ride</string>
+    <string name="home_rd_more_mirror">Mirror the phone</string>
+    <string name="home_rd_more_mirror_sub">Show the phone screen on the dash</string>
+    <string name="home_rd_more_map">Map and routes</string>
+    <string name="home_rd_more_map_sub">Free ride, GPX routes, offline maps</string>
+    <string name="home_rd_more_parking">Where I parked</string>
+    <string name="home_rd_more_parking_sub">Walk back to the bike, view the photo</string>
+    <string name="home_rd_more_fuel">Fuel stations</string>
+    <string name="home_rd_more_fuel_sub">Nearby stations and prices</string>
+    <string name="home_rd_more_maint">Maintenance</string>
+    <string name="home_rd_more_maint_sub">Oil, chain, tyres and refuels</string>
+    <string name="home_rd_more_garage">Garage</string>
+    <string name="home_rd_more_garage_sub">Your bikes and their photos</string>
+    <string name="home_rd_more_trophies">Trophies</string>
+    <string name="home_rd_more_traffic">Traffic lights and faster routes</string>
+    <string name="home_rd_more_video">Trip video</string>
+    <string name="home_rd_more_video_sub">Pick a trip, then make a clip with ride data</string>
+    <string name="home_rd_more_year">My year on the bike</string>
+    <string name="home_rd_more_year_sub">A summary to share</string>
+    <string name="home_rd_more_scan">Scan QR to add a bike</string>
+    <string name="home_rd_more_settings">Settings</string>
+    <string name="home_rd_more_dash_design">Dash design</string>
+    <string name="home_rd_more_dash_design_sub">Pick the layout shown on the bike</string>
+    <string name="home_rd_more_guide">Guide</string>
+    <string name="home_rd_more_help">Updates · help · logs</string>
+    <string name="home_rd_more_help_sub">What\'s new, report a problem, diagnostics</string>
+    <string name="home_rd_more_about">About</string>
+</resources>

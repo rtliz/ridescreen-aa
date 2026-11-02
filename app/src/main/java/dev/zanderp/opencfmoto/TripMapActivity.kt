@@ -67,6 +67,7 @@ class TripMapActivity : AppCompatActivity() {
             insets
         }
 
+        ScreenUi.bindBack(this)
         map = findViewById(R.id.map)
         map.setTileSource(TileSourceFactory.MAPNIK)
         map.setMultiTouchControls(true)
@@ -209,6 +210,7 @@ class TripMapActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.map_title).setText(R.string.all_rides_title)
         findViewById<TextView>(R.id.map_stats).setText(R.string.trips_loading_all)
         findViewById<View>(R.id.map_controls).visibility = View.VISIBLE
+        findViewById<View?>(R.id.map_legend_bar)?.visibility = View.GONE
         dimBaseMap()
         mapOf<Int, () -> Unit>(
             R.id.map_mode_routes to { heatMode = false },

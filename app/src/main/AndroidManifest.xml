@@ -111,6 +111,9 @@
             android:name=".SetupActivity"
             android:exported="false" />
         <activity
+            android:name=".SettingsHubActivity"
+            android:exported="false" />
+        <activity
             android:name=".TripActivity"
             android:exported="false" />
         <activity
@@ -212,6 +215,9 @@
             android:name=".DashDesignActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".MoreActivity"
+            android:exported="false" />
         <service
             android:name=".WearListenerService"
             android:exported="true">

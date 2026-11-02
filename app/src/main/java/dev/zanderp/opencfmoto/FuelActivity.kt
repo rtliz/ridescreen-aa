@@ -47,24 +47,42 @@ class FuelActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val scroll = ScrollView(this).apply { setBackgroundColor(ContextCompat.getColor(context, R.color.bg)) }
-        val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(20), dp(12), dp(20), dp(24)) }
+        val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(16), dp(8), dp(16), dp(24)) }
         scroll.addView(root)
-        root.addView(TextView(this).apply {
-            setText(R.string.fuel_title)
-            textSize = 24f
-            setTextColor(ContextCompat.getColor(context, R.color.text_primary))
-            typeface = ResourcesCompat.getFont(context, R.font.archivo_black)
+        root.addView(LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            minimumHeight = dp(56)
+            addView(android.widget.ImageButton(context).apply {
+                setBackgroundResource(R.drawable.bg_scr_back)
+                setImageResource(R.drawable.ic_scr_back)
+                setColorFilter(ContextCompat.getColor(context, R.color.text_primary))
+                contentDescription = getString(R.string.scr_back)
+                setOnClickListener { finish() }
+            }, LinearLayout.LayoutParams(dp(48), dp(48)))
+            addView(TextView(context).apply {
+                setText(R.string.fuel_title)
+                textSize = 21f
+                setTextColor(ContextCompat.getColor(context, R.color.text_primary))
+                setTypeface(typeface, android.graphics.Typeface.BOLD)
+                setPadding(dp(12), 0, 0, 0)
+            }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         })
         sub = TextView(this).apply {
-            textSize = 13f
+            textSize = 14f
             setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
-            setPadding(0, dp(4), 0, dp(10))
+            setPadding(dp(2), dp(8), 0, dp(10))
         }
         root.addView(sub)
-        val bar = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        val bar = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setBackgroundResource(R.drawable.bg_scr_seg_track)
+            setPadding(dp(5), dp(5), dp(5), dp(5))
+        }
         btnCheap = pill(getString(R.string.fuel_sort_price)) { byDistance = false; render() }
         btnNear = pill(getString(R.string.fuel_sort_distance)) { byDistance = true; render() }
         bar.addView(btnCheap, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginEnd = dp(6) })
+        styleSeg()
         bar.addView(btnNear, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         root.addView(bar)
         progress = ProgressBar(this)
@@ -133,8 +151,7 @@ class FuelActivity : AppCompatActivity() {
     private fun render() {
         val r = result ?: return
         progress.visibility = View.GONE
-        btnCheap.alpha = if (byDistance) 0.55f else 1f
-        btnNear.alpha = if (byDistance) 1f else 0.55f
+        styleSeg()
         list.removeAllViews()
         if (r.outsideSpain) { sub.setText(R.string.fuel_only_spain); return }
         if (r.stations.isEmpty()) { sub.text = getString(R.string.fuel_none, r.radiusKm); return }
@@ -148,10 +165,13 @@ class FuelActivity : AppCompatActivity() {
         val gold = ContextCompat.getColor(this, R.color.brand_gold)
         val card = MaterialCardView(this).apply {
             layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(10) }
-            radius = dp(18).toFloat()
-            setCardBackgroundColor(ContextCompat.getColor(context, R.color.surface))
-            setContentPadding(dp(14), dp(12), dp(14), dp(12))
-            if (cheapest) { strokeColor = gold; strokeWidth = dp(1) }
+            radius = dp(16).toFloat()
+            cardElevation = 0f
+            setCardBackgroundColor(ContextCompat.getColor(context, if (cheapest) R.color.scr_hl_bg else R.color.surface))
+            setContentPadding(dp(14), dp(14), dp(14), dp(14))
+            minimumHeight = dp(72)
+            strokeColor = if (cheapest) gold else ContextCompat.getColor(context, R.color.outline)
+            strokeWidth = if (cheapest) dp(2) else dp(1)
             setOnClickListener { navigate(s) }
         }
         val row = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
@@ -164,7 +184,7 @@ class FuelActivity : AppCompatActivity() {
         })
         col.addView(TextView(this).apply {
             text = listOf(s.address, s.town).filter { it.isNotBlank() }.joinToString(" · ")
-            textSize = 13f
+            textSize = 14f
             setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
         })
         if (s.hours.isNotBlank()) col.addView(TextView(this).apply {
@@ -176,9 +196,9 @@ class FuelActivity : AppCompatActivity() {
         val right = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.END }
         right.addView(TextView(this).apply {
             text = String.format(Locale.getDefault(), "%.3f €", s.price)
-            textSize = 20f
+            textSize = 28f
             setTextColor(gold)
-            typeface = ResourcesCompat.getFont(context, R.font.archivo_black)
+            typeface = android.graphics.Typeface.create("sans-serif-condensed", android.graphics.Typeface.BOLD)
         })
         right.addView(TextView(this).apply {
             text = if (s.distanceM < 1000) "${(s.distanceM / 10).toInt() * 10} m" else String.format(Locale.getDefault(), "%.1f km", s.distanceM / 1000f)
@@ -203,9 +223,24 @@ class FuelActivity : AppCompatActivity() {
         Toast.makeText(this, R.string.open_failed, Toast.LENGTH_SHORT).show()
     }
 
-    private fun pill(label: String, onClick: () -> Unit) = MaterialButton(this, null, com.google.android.material.R.attr.materialButtonOutlinedStyle).apply {
+    /** Segmented look: the active sort is amber, the other transparent (visual only). */
+    private fun styleSeg() {
+        for ((b, on) in listOf(btnCheap to !byDistance, btnNear to byDistance)) {
+            b.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                if (on) ContextCompat.getColor(this, R.color.brand_orange) else android.graphics.Color.TRANSPARENT)
+            b.setTextColor(ContextCompat.getColor(this, if (on) R.color.on_brand else R.color.text_secondary))
+            b.strokeWidth = 0
+        }
+    }
+
+    private fun pill(label: String, onClick: () -> Unit) = MaterialButton(this).apply {
         text = label
         isAllCaps = false
+        minHeight = dp(48)
+        cornerRadius = dp(12)
+        insetTop = 0
+        insetBottom = 0
+        setTypeface(typeface, android.graphics.Typeface.BOLD)
         setOnClickListener { onClick() }
     }
 

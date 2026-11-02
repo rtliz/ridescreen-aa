@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="scr_back">ย้อนกลับ</string>
+    <string name="scr_trips_title">ทริปของฉัน</string>
+    <string name="scr_year">สรุปประจำปี</string>
+    <string name="scr_all_map">แผนที่ทุกเส้นทาง</string>
+    <string name="scr_traffic">สัญญาณไฟ</string>
+    <string name="scr_week">สัปดาห์นี้</string>
+    <string name="scr_import">นำเข้า</string>
+    <string name="scr_trips_empty_hint">ทริปจะถูกบันทึกอัตโนมัติเมื่อเชื่อมต่อกับรถ</string>
+    <string name="scr_shutter">ถ่ายรูป</string>
+    <string name="scr_remove">ลบ</string>
+</resources>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- หน้าหลักแบบใหม่ + แถบล่าง 5 หมวด + หน้าเพิ่มเติม (mockups/app-redesign.html ภาพ 1, 2 และ 23) -->
+<resources>
+    <string name="home_rd_tab_home">หน้าหลัก</string>
+    <string name="home_rd_tab_map">แผนที่</string>
+    <string name="home_rd_tab_trips">ทริป</string>
+    <string name="home_rd_tab_bike">รถของฉัน</string>
+    <string name="home_rd_tab_more">เพิ่มเติม</string>
+
+    <string name="home_rd_stop_projection">หยุดการฉาย</string>
+    <string name="home_rd_unit_km">กม.</string>
+    <string name="home_rd_unit_kmh">กม./ชม.</string>
+    <string name="home_rd_stat_today">วันนี้</string>
+    <string name="home_rd_stat_max">เร็วสุด</string>
+    <string name="home_rd_add_bike">เพิ่มรถ</string>
+    <string name="home_rd_choose_bike">เลือกรถ</string>
+    <string name="home_rd_walk">วิธีเดินไป</string>
+
+    <string name="home_rd_more_title">เพิ่มเติม</string>
+    <string name="home_rd_more_riding">ขับขี่</string>
+    <string name="home_rd_more_bike">รถ</string>
+    <string name="home_rd_more_stats">สถิติ</string>
+    <string name="home_rd_more_app">แอป</string>
+
+    <string name="home_rd_more_controls">ควบคุมและปุ่มแฮนด์</string>
+    <string name="home_rd_more_controls_sub">D-pad บนจอ · แมปปุ่ม · ควบคุมจากภายนอก</string>
+    <string name="home_rd_more_hud">ดูจอรถ</string>
+    <string name="home_rd_more_hud_sub">สิ่งที่รถแสดงอยู่ตอนนี้</string>
+    <string name="home_rd_more_live">แชร์เส้นทางสด</string>
+    <string name="home_rd_more_live_sub">ลิงก์ส่วนตัวให้คนอื่นติดตาม</string>
+    <string name="home_rd_more_pax">โหมดผู้โดยสาร</string>
+    <string name="home_rd_more_pax_sub">คนซ้อนเลือกปลายทางและเพลง</string>
+    <string name="home_rd_more_trip">ทริปปัจจุบัน</string>
+    <string name="home_rd_more_trip_sub">สถิติสดของทริปนี้</string>
+    <string name="home_rd_more_mirror">มิเรอร์จอมือถือ</string>
+    <string name="home_rd_more_mirror_sub">แสดงหน้าจอมือถือบนจอรถ</string>
+    <string name="home_rd_more_map">แผนที่และเส้นทาง</string>
+    <string name="home_rd_more_map_sub">ขี่อิสระ · เส้นทาง GPX · แผนที่ออฟไลน์</string>
+    <string name="home_rd_more_parking">ที่จอดรถ</string>
+    <string name="home_rd_more_parking_sub">เดินกลับไปที่รถ · ดูรูปที่จอด</string>
+    <string name="home_rd_more_fuel">ปั๊มน้ำมัน</string>
+    <string name="home_rd_more_fuel_sub">ปั๊มใกล้ฉันและราคา</string>
+    <string name="home_rd_more_maint">บำรุงรักษา</string>
+    <string name="home_rd_more_maint_sub">น้ำมันเครื่อง โซ่ ยาง และการเติมน้ำมัน</string>
+    <string name="home_rd_more_garage">โรงรถ</string>
+    <string name="home_rd_more_garage_sub">รถของคุณและรูปถ่าย</string>
+    <string name="home_rd_more_trophies">ถ้วยรางวัล</string>
+    <string name="home_rd_more_traffic">สัญญาณไฟและเส้นทางที่เร็วกว่า</string>
+    <string name="home_rd_more_video">วิดีโอทริป</string>
+    <string name="home_rd_more_video_sub">เลือกทริปแล้วทำคลิปพร้อมข้อมูลการขี่</string>
+    <string name="home_rd_more_year">ปีของฉันบนรถ</string>
+    <string name="home_rd_more_year_sub">สรุปสำหรับแชร์</string>
+    <string name="home_rd_more_scan">สแกน QR เพิ่มรถ</string>
+    <string name="home_rd_more_settings">ตั้งค่า</string>
+    <string name="home_rd_more_dash_design">หน้าตาจอรถ</string>
+    <string name="home_rd_more_dash_design_sub">เลือกแบบที่แสดงบนจอรถ</string>
+    <string name="home_rd_more_guide">คู่มือการใช้งาน</string>
+    <string name="home_rd_more_help">ข้อมูลอัปเดต · ช่วยเหลือ · บันทึกการทำงาน</string>
+    <string name="home_rd_more_help_sub">มีอะไรใหม่ · แจ้งปัญหา · ข้อมูลวินิจฉัย</string>
+    <string name="home_rd_more_about">เกี่ยวกับ</string>
+</resources>

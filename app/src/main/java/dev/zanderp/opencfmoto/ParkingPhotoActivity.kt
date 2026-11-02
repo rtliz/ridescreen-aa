@@ -44,21 +44,26 @@ class ParkingPhotoActivity : AppCompatActivity() {
         val dp = resources.displayMetrics.density
         val root = FrameLayout(this).apply { setBackgroundColor(Color.BLACK) }
         root.addView(ZoomImageView(this, bmp), FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-        root.addView(TextView(this).apply {
-            text = "✕"
-            textSize = 26f
-            setTextColor(Color.WHITE)
-            setShadowLayer(6f, 0f, 2f, Color.BLACK)
-            setPadding((20 * dp).toInt(), (40 * dp).toInt(), (20 * dp).toInt(), (12 * dp).toInt())
+        root.addView(android.widget.ImageButton(this).apply {
+            setBackgroundResource(R.drawable.bg_scr_back)
+            setImageResource(R.drawable.ic_scr_back)
+            setColorFilter(Color.WHITE)
+            contentDescription = getString(R.string.scr_back)
             setOnClickListener { finish() }
-        }, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END))
+        }, FrameLayout.LayoutParams((48 * dp).toInt(), (48 * dp).toInt(), Gravity.TOP or Gravity.START).apply {
+            topMargin = (40 * dp).toInt(); marginStart = (16 * dp).toInt()
+        })
         root.addView(TextView(this).apply {
             text = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(f.lastModified()))
-            textSize = 14f
+            textSize = 15f
             setTextColor(Color.WHITE)
-            setShadowLayer(6f, 0f, 2f, Color.BLACK)
-            setPadding((20 * dp).toInt(), 0, (20 * dp).toInt(), (36 * dp).toInt())
-        }, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM or Gravity.START))
+            gravity = Gravity.CENTER
+            minHeight = (48 * dp).toInt()
+            setBackgroundResource(R.drawable.bg_scr_chip)
+            setPadding((16 * dp).toInt(), 0, (16 * dp).toInt(), 0)
+        }, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL).apply {
+            bottomMargin = (36 * dp).toInt()
+        })
         setContentView(root)
     }
 

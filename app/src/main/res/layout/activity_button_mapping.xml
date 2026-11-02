@@ -13,14 +13,26 @@
         android:paddingHorizontal="16dp"
         android:paddingBottom="24dp">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/buttons_button_mapping"
-            android:textColor="@color/text_primary"
-            android:textSize="26sp"
-            android:textStyle="bold" />
+            android:gravity="center_vertical"
+            android:minHeight="56dp"
+            android:orientation="horizontal"
+            android:paddingTop="4dp">
+
+            <ImageButton
+                android:id="@+id/scr_back"
+                style="@style/Scr.Back" />
+
+            <TextView
+                style="@style/Scr.BarTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="12dp"
+                android:text="@string/buttons_button_mapping" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -51,14 +63,14 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_teach_handlebar"
-            style="@style/Widget.OpenCfMoto.Segment"
+            style="@style/Scr.Btn.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             android:text="@string/buttons_teach_handlebar" />
 
         <com.google.android.material.card.MaterialCardView
-            style="@style/Card.OpenCfMoto"
+            style="@style/Scr.CardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp">
@@ -93,7 +105,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/remote_pad_on"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
@@ -102,7 +114,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/remote_pad_off"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
@@ -112,7 +124,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_teach_remote"
-                    style="@style/Widget.OpenCfMoto.Segment"
+                    style="@style/Scr.Btn.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -123,7 +135,7 @@
         <!-- ===== v2.3: dedicated remote → Android Auto only ===== -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_dedicated_remote"
-            style="@style/Card.OpenCfMoto"
+            style="@style/Scr.CardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp">
@@ -168,7 +180,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_external_copy"
-                    style="@style/Widget.OpenCfMoto.Segment"
+                    style="@style/Scr.Btn.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -185,7 +197,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_dedicated_pick"
                     android:visibility="gone"
-                    style="@style/Widget.OpenCfMoto.Segment"
+                    style="@style/Scr.Btn.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -196,7 +208,7 @@
 
         <!-- ===== Cluster preset ===== -->
         <com.google.android.material.card.MaterialCardView
-            style="@style/Card.OpenCfMoto"
+            style="@style/Scr.CardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp">
@@ -241,7 +253,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_cluster_preset"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -249,7 +261,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_cluster_clear"
-                        style="@style/Widget.OpenCfMoto.Segment"
+                        style="@style/Scr.Btn.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -261,7 +273,7 @@
 
         <!-- ===== Gestures ===== -->
         <com.google.android.material.card.MaterialCardView
-            style="@style/Card.OpenCfMoto"
+            style="@style/Scr.CardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp">
@@ -289,7 +301,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_reset"
-                    style="@style/Widget.OpenCfMoto.Segment"
+                    style="@style/Scr.Btn.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -299,7 +311,7 @@
 
         <!-- ===== Saved places ===== -->
         <com.google.android.material.card.MaterialCardView
-            style="@style/Card.OpenCfMoto"
+            style="@style/Scr.CardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp">
@@ -338,7 +350,7 @@
         <!-- ===== Overlay permission (only shown when a nav action is mapped and it's off) ===== -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_overlay"
-            style="@style/Card.OpenCfMoto"
+            style="@style/Scr.CardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -367,7 +379,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_overlay"
-                    style="@style/Widget.OpenCfMoto.Segment"
+                    style="@style/Scr.Btn.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"

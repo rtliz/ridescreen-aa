@@ -35,19 +35,14 @@ class TrophiesActivity : AppCompatActivity() {
         val scroll = ScrollView(this).apply { setBackgroundColor(ContextCompat.getColor(context, R.color.bg)) }
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(dp(20), dp(12), dp(20), dp(24))
+            setPadding(dp(16), dp(8), dp(16), dp(24))
         }
         scroll.addView(root)
-        root.addView(TextView(this).apply {
-            text = getString(R.string.tr_screen_title)
-            textSize = 24f
-            setTextColor(ContextCompat.getColor(context, R.color.text_primary))
-            typeface = ResourcesCompat.getFont(context, R.font.archivo_black)
-        })
+        root.addView(ScreenUi.header(this, getString(R.string.tr_screen_title)))
         header = TextView(this).apply {
             textSize = 14f
             setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
-            setPadding(0, dp(4), 0, dp(8))
+            setPadding(dp(2), dp(8), 0, dp(4))
         }
         root.addView(header)
         list = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
@@ -81,8 +76,8 @@ class TrophiesActivity : AppCompatActivity() {
             list.addView(TextView(this).apply {
                 text = getString(R.string.tr_next)
                 textSize = 13f
-                setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
-                setPadding(0, dp(18), 0, dp(2))
+                setTextColor(ContextCompat.getColor(context, R.color.status_idle))
+                setPadding(dp(2), dp(18), 0, dp(2))
             })
             next.forEach { list.addView(card(it)) }
         }
@@ -93,31 +88,35 @@ class TrophiesActivity : AppCompatActivity() {
         val card = MaterialCardView(this).apply {
             layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 .apply { topMargin = dp(10) }
-            radius = dp(18).toFloat()
-            setCardBackgroundColor(ContextCompat.getColor(context, R.color.surface))
-            setContentPadding(dp(14), dp(12), dp(14), dp(12))
-            if (t.unlocked) {
-                strokeColor = gold
-                strokeWidth = dp(1)
-            }
+            radius = dp(16).toFloat()
+            cardElevation = 0f
+            minimumHeight = dp(72)
+            setContentPadding(dp(14), dp(14), dp(14), dp(14))
+            setCardBackgroundColor(ContextCompat.getColor(context, if (t.unlocked) R.color.scr_hl_bg else R.color.surface))
+            strokeColor = if (t.unlocked) gold else ContextCompat.getColor(context, R.color.outline)
+            strokeWidth = if (t.unlocked) dp(2) else dp(1)
             alpha = if (t.unlocked) 1f else 0.72f
         }
         val row = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
-        row.addView(TextView(this).apply {
-            text = if (t.unlocked) t.medal else "🔒"
+        if (t.unlocked) row.addView(TextView(this).apply {
+            text = t.medal
             textSize = 30f
             setPadding(0, 0, dp(14), 0)
-        })
+        }) else row.addView(android.widget.ImageView(this).apply {
+            setImageResource(R.drawable.ic_scr_lock)
+            setColorFilter(ContextCompat.getColor(context, R.color.status_idle))
+            setPadding(dp(4), 0, dp(14), 0)
+        }, LinearLayout.LayoutParams(dp(42), dp(28)))
         val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         col.addView(TextView(this).apply {
             text = Trophies.title(context, t)
-            textSize = 16f
+            textSize = 17f
             setTextColor(ContextCompat.getColor(context, R.color.text_primary))
             typeface = android.graphics.Typeface.DEFAULT_BOLD
         })
         col.addView(TextView(this).apply {
             text = Trophies.description(context, t)
-            textSize = 13f
+            textSize = 14f
             setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
         })
         if (t.unlocked) {
@@ -132,8 +131,8 @@ class TrophiesActivity : AppCompatActivity() {
                 max = 1000
                 progress = ((t.progress / t.target) * 1000).toInt()
                 progressTintList = ColorStateList.valueOf(gold)
-                progressBackgroundTintList = ColorStateList.valueOf(Color.parseColor("#33FFFFFF"))
-            }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(8)).apply { topMargin = dp(6) })
+                progressBackgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.outline))
+            }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(10)).apply { topMargin = dp(8) })
             col.addView(TextView(this).apply {
                 text = Trophies.progressText(t)
                 textSize = 12f

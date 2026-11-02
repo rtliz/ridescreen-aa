@@ -28,6 +28,7 @@ class AboutActivity : AppCompatActivity() {
             insets
         }
 
+        ScreenUi.bindBack(this)
         findViewById<TextView>(R.id.about_version).text =
             "Version ${BuildConfig.VERSION_NAME}  ·  build ${BuildConfig.VERSION_CODE}"
 

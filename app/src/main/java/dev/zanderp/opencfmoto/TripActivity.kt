@@ -50,6 +50,7 @@ class TripActivity : AppCompatActivity() {
         }
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
+        ScreenUi.bindBack(this)
         speedView = findViewById(R.id.trip_speed)
         gpsView = findViewById(R.id.trip_gps)
         distanceView = findViewById(R.id.trip_distance)

@@ -74,11 +74,13 @@ class GarageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_garage)
+        HomeNav.attach(this, HomeNav.Tab.BIKE) // redesign: 5-tab bottom bar
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.garage_root)) { v, insets ->
             val b = insets.getInsets(SafeInsets.BARS)
             v.setPadding(b.left, b.top, b.right, b.bottom)
             insets
         }
+        ScreenUi.bindBack(this)
         container = findViewById(R.id.garage_container)
         empty = findViewById(R.id.garage_empty)
         findViewById<View>(R.id.garage_scan).setOnClickListener {
@@ -112,14 +114,14 @@ class GarageActivity : AppCompatActivity() {
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
             ).apply { topMargin = dp(10) }
-            radius = dp(18).toFloat()
-            setCardBackgroundColor(ContextCompat.getColor(this@GarageActivity, R.color.surface))
-            setContentPadding(dp(14), dp(12), dp(14), dp(12))
+            radius = dp(16).toFloat()
+            cardElevation = 0f
+            setCardBackgroundColor(ContextCompat.getColor(this@GarageActivity, if (isActive) R.color.scr_hl_bg else R.color.surface))
+            setContentPadding(dp(14), dp(14), dp(14), dp(14))
+            minimumHeight = dp(88)
             isClickable = true
-            if (isActive) {
-                strokeWidth = dp(2)
-                strokeColor = ContextCompat.getColor(this@GarageActivity, R.color.brand_orange)
-            }
+            strokeWidth = if (isActive) dp(2) else dp(1)
+            strokeColor = ContextCompat.getColor(this@GarageActivity, if (isActive) R.color.brand_orange else R.color.outline)
             setOnClickListener { showActions(bike, isActive) }
         }
 
@@ -129,8 +131,10 @@ class GarageActivity : AppCompatActivity() {
         }
 
         row.addView(ImageView(this).apply {
-            layoutParams = LinearLayout.LayoutParams(dp(56), dp(56))
+            layoutParams = LinearLayout.LayoutParams(dp(64), dp(64))
             scaleType = ImageView.ScaleType.CENTER_CROP
+            setBackgroundResource(R.drawable.bg_scr_icon)
+            clipToOutline = true
             val bmp = bike.photoPath?.let { loadPhoto(it) }
             if (bmp != null) {
                 setImageBitmap(bmp)
@@ -149,7 +153,7 @@ class GarageActivity : AppCompatActivity() {
         col.addView(TextView(this).apply {
             text = bike.name
             setTextColor(ContextCompat.getColor(this@GarageActivity, R.color.text_primary))
-            textSize = 17f
+            textSize = 18f
             setTypeface(typeface, android.graphics.Typeface.BOLD)
         })
         col.addView(TextView(this).apply {
@@ -160,7 +164,7 @@ class GarageActivity : AppCompatActivity() {
                     if (isActive) R.color.brand_orange else R.color.text_secondary
                 )
             )
-            textSize = 13f
+            textSize = 14f
         })
         row.addView(col)
 

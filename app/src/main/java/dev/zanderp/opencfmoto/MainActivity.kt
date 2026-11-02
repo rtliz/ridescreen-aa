@@ -782,6 +782,12 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(b.left, b.top, b.right, b.bottom)
             insets
         }
+        // Redesign: 5-tab bottom bar. Map goes through the old Map button (same handler, same enabled state).
+        HomeNav.attach(this, HomeNav.Tab.HOME) { tab ->
+            if (tab != HomeNav.Tab.MAP) return@attach false
+            findViewById<View?>(R.id.btn_gpx)?.takeIf { it.isEnabled }?.performClick()
+            true
+        }
 
         logView = findViewById(R.id.log_view)
         logScroll = findViewById(R.id.log_scroll)
@@ -797,7 +803,7 @@ class MainActivity : AppCompatActivity() {
 
         // Icons are set here rather than in XML: in this AGP/compileSdk setup, library (res-auto)
         // attributes like app:icon don't resolve in layouts, so we assign them programmatically.
-        (connectBtn as? MaterialButton)?.setIconResource(R.drawable.ic_power)
+        (connectBtn as? MaterialButton)?.setIconResource(R.drawable.ic_rs_power)
         findViewById<android.widget.TextView>(R.id.brand_version).text =
             "v${BuildConfig.VERSION_NAME}"
         // v2.2 home (proposal A): "Más" row icons + the tiles (icon bubble, title, live detail).
@@ -985,8 +991,10 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btn_share_log).setOnClickListener { shareLog() }
 
-        findViewById<Button>(R.id.btn_setup).setOnClickListener { SetupActivity.start(this) }
-        findViewById<View>(R.id.btn_hero_menu).setOnClickListener { SetupActivity.start(this) }
+        findViewById<Button>(R.id.btn_setup).setOnClickListener { SettingsHubActivity.start(this) }
+        findViewById<View>(R.id.btn_hero_menu).setOnClickListener { SettingsHubActivity.start(this) }
+        // Redesign top bar: the bike chip picks the active bike in the Garage.
+        findViewById<View?>(R.id.home_rd_bike_chip)?.setOnClickListener { GarageActivity.start(this) }
         findViewById<View>(R.id.btn_trips_list).setOnClickListener { TripsListActivity.start(this) }
         findViewById<View>(R.id.brand_title).setOnClickListener { AboutActivity.start(this) }
         findViewById<View>(R.id.btn_about_page).setOnClickListener { AboutActivity.start(this) }
@@ -1010,6 +1018,7 @@ class MainActivity : AppCompatActivity() {
 
         wireDashClockTap()
         log("Ready. Tap Connect to project Android Auto to your dash.")
+        logView.post { runMoreAction(intent) }
 
         // First launch: walk the user through the one-time prerequisites.
         try {
@@ -1051,6 +1060,25 @@ class MainActivity : AppCompatActivity() {
             intent.removeExtra(EXTRA_START_GPX)
             beginGpxProjection()
         }
+        runMoreAction(intent)
+    }
+
+    /**
+     * Redesign "More" tab: an entry that lives on this screen. Tap the same (now hidden) view the old
+     * home button was, so it runs exactly the same handler, and only when that view is enabled.
+     */
+    private fun runMoreAction(intent: Intent?) {
+        val action = intent?.getStringExtra(MoreActivity.EXTRA_ACTION) ?: return
+        intent.removeExtra(MoreActivity.EXTRA_ACTION)
+        val id = when (action) {
+            MoreActivity.ACTION_SCAN -> R.id.btn_aa_start
+            MoreActivity.ACTION_MIRROR -> R.id.btn_mirror_start
+            MoreActivity.ACTION_LIVE -> R.id.btn_live
+            MoreActivity.ACTION_HELP -> R.id.btn_help
+            MoreActivity.ACTION_SETTINGS -> R.id.btn_setup
+            else -> return
+        }
+        findViewById<View?>(id)?.takeIf { it.isEnabled }?.performClick()
     }
 
     override fun onResume() {
@@ -1309,6 +1337,9 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.hero_placeholder).visibility = if (bmp == null) View.VISIBLE else View.GONE
         findViewById<TextView>(R.id.hero_name).text = bike?.name ?: ""
         findViewById<TextView>(R.id.hero_sub).text = bike?.qr?.ssid ?: getString(R.string.main_no_bike_paired_yet)
+        // Redesign top bar: the active bike's name on the chip.
+        findViewById<TextView?>(R.id.home_rd_bike_chip)?.text =
+            bike?.name?.takeIf { it.isNotBlank() } ?: getString(R.string.home_rd_add_bike)
         // Wordmark: the last word in gold.
         findViewById<TextView>(R.id.brand_title).apply {
             val t = getString(R.string.brand_wordmark)
@@ -1430,37 +1461,32 @@ class MainActivity : AppCompatActivity() {
     private class Tile(val sub: TextView, val title: TextView)
     private val tiles = HashMap<Int, Tile>()
 
-    /** Icon bubble (soft colour per shortcut) + title + a live detail line, inside a HomeTile container. */
-    private fun buildTile(id: Int, emoji: String, color: Int, title: String, sub: String = "", big: Boolean = false) {
+    /** Redesign tile (.tile): amber vector icon top-left, then title + a live detail line at the bottom. */
+    private fun buildTile(id: Int, icon: Int, title: String, sub: String = "", big: Boolean = false) {
         val box = findViewById<android.widget.LinearLayout?>(id) ?: return
         box.removeAllViews()
         val dp = resources.displayMetrics.density
-        val bubble = TextView(this).apply {
-            text = emoji
-            textSize = if (big) 20f else 22f
-            gravity = android.view.Gravity.CENTER
-            background = android.graphics.drawable.GradientDrawable().apply {
-                shape = android.graphics.drawable.GradientDrawable.OVAL
-                setColor((color and 0x00FFFFFF) or 0x33000000)
-            }
+        val img = android.widget.ImageView(this).apply {
+            setImageResource(icon)
+            imageTintList = android.content.res.ColorStateList.valueOf(ContextCompat.getColor(this@MainActivity, R.color.brand_orange))
+            contentDescription = null
         }
-        val size = ((if (big) 42 else 46) * dp).toInt()
-        box.addView(bubble, android.widget.LinearLayout.LayoutParams(size, size))
+        val size = ((if (big) 40 else 30) * dp).toInt()
+        box.addView(img, android.widget.LinearLayout.LayoutParams(size, size))
         val t = TextView(this).apply {
             text = title
-            textSize = if (big) 15f else 13f
+            textSize = if (big) 18f else 15.5f
             setTextColor(ContextCompat.getColor(this@MainActivity, R.color.text_primary))
-            typeface = androidx.core.content.res.ResourcesCompat.getFont(this@MainActivity, R.font.archivo_medium)
-            gravity = if (big) android.view.Gravity.START else android.view.Gravity.CENTER
+            typeface = android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL)
             maxLines = 2
-            setPadding(0, (8 * dp).toInt(), 0, 0)
+            setPadding(0, ((if (big) 14 else 12) * dp).toInt(), 0, 0)
         }
         box.addView(t)
         val st = TextView(this).apply {
             text = sub
-            textSize = 11f
-            setTextColor(ContextCompat.getColor(this@MainActivity, R.color.text_secondary))
-            gravity = t.gravity
+            textSize = 13f
+            setTextColor(ContextCompat.getColor(this@MainActivity, R.color.home_rd_muted))
+            typeface = android.graphics.Typeface.create("sans-serif", android.graphics.Typeface.NORMAL)
             maxLines = 2
             ellipsize = android.text.TextUtils.TruncateAt.END
             visibility = if (sub.isBlank()) View.GONE else View.VISIBLE
@@ -1476,16 +1502,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupHomeTiles() {
-        buildTile(R.id.btn_trips_list, "🏍️", 0xFF5B8DEF.toInt(), getString(R.string.home_tile_trips))
-        buildTile(R.id.btn_fuel, "⛽", 0xFFE5774E.toInt(), getString(R.string.home_tile_fuel), getString(R.string.home_tile_fuel_sub))
-        buildTile(R.id.btn_maint, "🔧", 0xFF4FB6A6.toInt(), getString(R.string.home_tile_maint))
-        buildTile(R.id.btn_traffic_lights, "🚦", 0xFFE05A5A.toInt(), getString(R.string.home_tile_tl))
-        buildTile(R.id.btn_live, "📍", 0xFF5FD07A.toInt(), getString(R.string.home_tile_live))
-        buildTile(R.id.btn_help, "❓", 0xFFA98BE0.toInt(), getString(R.string.home_tile_help), getString(R.string.home_tile_help_sub))
-        buildTile(R.id.btn_park_photo, "📸", 0xFFD1A955.toInt(), getString(R.string.home_big_park), getString(R.string.home_big_park_sub), big = true)
-        buildTile(R.id.btn_controls, "🎮", 0xFF5B8DEF.toInt(), getString(R.string.controls_controls), getString(R.string.home_big_controls_sub), big = true)
-        buildTile(R.id.btn_hud_view, "🖥️", 0xFF4FB6A6.toInt(), getString(R.string.hud_dash_view), getString(R.string.home_big_hud_sub), big = true)
-        buildTile(R.id.btn_trip, "⏱️", 0xFF5FD07A.toInt(), getString(R.string.home_big_trip), getString(R.string.home_big_trip_sub), big = true)
+        buildTile(R.id.btn_trips_list, R.drawable.ic_rs_route, getString(R.string.home_tile_trips))
+        buildTile(R.id.btn_fuel, R.drawable.ic_rs_fuel, getString(R.string.home_tile_fuel), getString(R.string.home_tile_fuel_sub))
+        buildTile(R.id.btn_maint, R.drawable.ic_rs_wrench, getString(R.string.home_tile_maint))
+        buildTile(R.id.btn_traffic_lights, R.drawable.ic_rs_traffic, getString(R.string.home_tile_tl))
+        buildTile(R.id.btn_live, R.drawable.ic_rs_live, getString(R.string.home_tile_live))
+        buildTile(R.id.btn_help, R.drawable.ic_rs_help, getString(R.string.home_tile_help), getString(R.string.home_tile_help_sub))
+        buildTile(R.id.btn_park_photo, R.drawable.ic_rs_camera, getString(R.string.home_big_park), getString(R.string.home_big_park_sub), big = true)
+        buildTile(R.id.btn_controls, R.drawable.ic_rs_gamepad, getString(R.string.controls_controls), getString(R.string.home_big_controls_sub))
+        buildTile(R.id.btn_hud_view, R.drawable.ic_rs_monitor, getString(R.string.hud_dash_view), getString(R.string.home_big_hud_sub))
+        buildTile(R.id.btn_trip, R.drawable.ic_rs_route, getString(R.string.home_big_trip), getString(R.string.home_big_trip_sub))
+        (findViewById<View>(R.id.parked_walk) as? MaterialButton)?.setIconResource(R.drawable.ic_rs_walk)
+        (findViewById<View>(R.id.parked_view_photo) as? MaterialButton)?.setIconResource(R.drawable.ic_rs_photo)
         findViewById<View>(R.id.btn_traffic_lights)?.setOnClickListener { startActivity(Intent(this, TrafficLightsActivity::class.java)) }
         findViewById<View>(R.id.parked_walk)?.setOnClickListener {
             val spot = Parking.get(this) ?: return@setOnClickListener
@@ -1515,50 +1543,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Parked vs connected: the hero shrinks and the riding shortcuts (park with photo, controls, dash
-     * view, current trip, destination search) appear; the parking card only shows when parked.
+     * Parked vs connected (redesign frames 1-2): connected shows the riding tiles + search and a green
+     * status card with the live speed; parked shows the bike drawing, the parking card and the quick tiles.
      */
     private fun renderHomeMode(phase: Phase) {
         val live = sessionAlive(phase)
         findViewById<View?>(R.id.live_section)?.visibility = if (live) View.VISIBLE else View.GONE
-        findViewById<View?>(R.id.hero_card)?.let { hero ->
-            val h = ((if (live) 190 else 280) * resources.displayMetrics.density).toInt()
-            if (hero.layoutParams.height != h) { hero.layoutParams.height = h; hero.requestLayout() }
-        }
-        findViewById<TextView?>(R.id.hero_name)?.textSize = if (live) 34f else 46f
-        placeLiveShare(big = live)
+        findViewById<View?>(R.id.home_rd_tiles_row)?.visibility = if (live) View.GONE else View.VISIBLE
+        findViewById<View?>(R.id.home_rd_bike_art)?.visibility = if (live) View.GONE else View.VISIBLE
+        val projecting = phase == Phase.STREAMING || phase == Phase.MIRRORING
+        findViewById<View?>(R.id.status_card)?.setBackgroundResource(
+            if (projecting) R.drawable.bg_home_rd_card_ok else R.drawable.bg_home_rd_card,
+        )
+        // The redesign moves live share to the More tab, so it no longer swaps places with Controls here.
+        renderLive()
         renderParked()
         renderPkeCard()
-    }
-
-    /**
-     * Manel (14 oct): while connected, "Ruta en directo" belongs among the big riding tiles and
-     * "Controles" can drop into the grid. Swap the two views (and their layout params) in place.
-     */
-    private fun placeLiveShare(big: Boolean) {
-        val liveTile = findViewById<android.widget.LinearLayout?>(R.id.btn_live) ?: return
-        val controls = findViewById<android.widget.LinearLayout?>(R.id.btn_controls) ?: return
-        val liveIsBig = liveTile.parent === (findViewById<View>(R.id.btn_park_photo)?.parent)
-        if (liveIsBig == big) return
-        val pa = liveTile.parent as? android.view.ViewGroup ?: return
-        val pb = controls.parent as? android.view.ViewGroup ?: return
-        val ia = pa.indexOfChild(liveTile); val ib = pb.indexOfChild(controls)
-        val la = liveTile.layoutParams; val lb = controls.layoutParams
-        pa.removeView(liveTile); pb.removeView(controls)
-        pb.addView(liveTile, ib, lb); pa.addView(controls, ia, la)
-        val dp = resources.displayMetrics.density
-        fun style(v: android.widget.LinearLayout, asBig: Boolean) {
-            v.gravity = if (asBig) (android.view.Gravity.CENTER_VERTICAL or android.view.Gravity.START) else android.view.Gravity.CENTER
-            v.minimumHeight = ((if (asBig) 112 else 108) * dp).toInt()
-            if (asBig) v.setPadding((16 * dp).toInt(), (14 * dp).toInt(), (10 * dp).toInt(), (12 * dp).toInt())
-            else v.setPadding((6 * dp).toInt(), (14 * dp).toInt(), (6 * dp).toInt(), (12 * dp).toInt())
-        }
-        style(liveTile, big); style(controls, !big)
-        buildTile(R.id.btn_live, "📍", 0xFF5FD07A.toInt(), getString(R.string.home_tile_live), big = big)
-        buildTile(R.id.btn_controls, "🎮", 0xFF5B8DEF.toInt(), getString(R.string.controls_controls),
-            getString(R.string.home_big_controls_sub), big = !big)
-        controls.setOnClickListener { startActivity(Intent(this, ControlsActivity::class.java)) }
-        renderLive()
     }
 
     // ── v2.3: battery + lock card from the keyless box (read only: PkeBattery asks only 008 + 001,7).
@@ -1811,18 +1811,28 @@ class MainActivity : AppCompatActivity() {
         }
         connectBtn.text = when {
             phase.busy -> getString(R.string.main_stop)
-            phase == Phase.STREAMING || phase == Phase.MIRRORING -> getString(R.string.main_stop)
+            phase == Phase.STREAMING || phase == Phase.MIRRORING -> getString(R.string.home_rd_stop_projection)
             BikeMemory.hasSaved(this) ->
                 getString(R.string.main_connect_to, BikeMemory.lastBikeName(this) ?: "")
             else -> getString(R.string.main_connect)
         }
         (connectBtn as? MaterialButton)?.setIconResource(
             if (phase.busy || phase == Phase.STREAMING || phase == Phase.MIRRORING) {
-                R.drawable.ic_stop
+                R.drawable.ic_rs_close
             } else {
-                R.drawable.ic_power
+                R.drawable.ic_rs_power
             },
         )
+        // Redesign: amber Connect, red Stop (look only; the click handler decides by phase as before).
+        (connectBtn as? MaterialButton)?.let { b ->
+            val stop = phase.busy || phase == Phase.STREAMING || phase == Phase.MIRRORING
+            val fg = ContextCompat.getColor(this, if (stop) R.color.white else R.color.on_brand)
+            b.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                ContextCompat.getColor(this, if (stop) R.color.home_rd_stop else R.color.brand_orange),
+            )
+            b.setTextColor(fg)
+            b.iconTint = android.content.res.ColorStateList.valueOf(fg)
+        }
         updateButtonStates(phase)
     }
 

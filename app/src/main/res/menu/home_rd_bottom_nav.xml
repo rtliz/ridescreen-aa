@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The 5 tabs of mockups/app-redesign.html. Wired in HomeNav.kt. -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/home_rd_tab_home" android:icon="@drawable/ic_rs_home" android:title="@string/home_rd_tab_home" />
+    <item android:id="@+id/home_rd_tab_map" android:icon="@drawable/ic_rs_map" android:title="@string/home_rd_tab_map" />
+    <item android:id="@+id/home_rd_tab_trips" android:icon="@drawable/ic_rs_route" android:title="@string/home_rd_tab_trips" />
+    <item android:id="@+id/home_rd_tab_bike" android:icon="@drawable/ic_rs_bike" android:title="@string/home_rd_tab_bike" />
+    <item android:id="@+id/home_rd_tab_more" android:icon="@drawable/ic_rs_menu" android:title="@string/home_rd_tab_more" />
+</menu>

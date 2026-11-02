@@ -23,6 +23,7 @@ class ScreenMarginsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_screen_margins)
+        ScreenUi.bindBack(this)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.margins_root)) { v, insets ->
             val b = insets.getInsets(SafeInsets.BARS)
             v.setPadding(b.left, b.top, b.right, b.bottom)

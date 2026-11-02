@@ -47,14 +47,9 @@ class TrafficLightsActivity : AppCompatActivity() {
         GpxOsmdroid.configure(this)  // v2.3 · shared persistent tile cache (90 days), so maps load instantly after an update
         enableEdgeToEdge()
         val scroll = ScrollView(this).apply { setBackgroundColor(color(R.color.bg)) }
-        val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(16), dp(12), dp(16), dp(28)) }
+        val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(16), dp(8), dp(16), dp(28)) }
         scroll.addView(root)
-        root.addView(TextView(this).apply {
-            setText(R.string.tl_title)
-            textSize = 24f
-            setTextColor(color(R.color.text_primary))
-            typeface = ResourcesCompat.getFont(context, R.font.archivo_black)
-        })
+        root.addView(ScreenUi.header(this, getString(R.string.tl_title)))
         status = body(getString(R.string.tl_progress_trips))
         root.addView(status)
 
@@ -71,7 +66,10 @@ class TrafficLightsActivity : AppCompatActivity() {
             false
         }
         val mapCard = MaterialCardView(this).apply {
-            radius = dp(18).toFloat()
+            radius = dp(16).toFloat()
+            cardElevation = 0f
+            strokeWidth = dp(1)
+            strokeColor = color(R.color.outline)
             addView(map, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(300)))
         }
         root.addView(mapCard, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(300)).apply { topMargin = dp(10) })
@@ -268,35 +266,37 @@ class TrafficLightsActivity : AppCompatActivity() {
     private fun card(title: String, text: String, accent: Int, onClick: () -> Unit) = MaterialCardView(this).apply {
         layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(8) }
         radius = dp(16).toFloat()
+        cardElevation = 0f
+        minimumHeight = dp(56)
         setCardBackgroundColor(color(R.color.surface))
-        setContentPadding(dp(14), dp(10), dp(14), dp(10))
+        setContentPadding(dp(14), dp(12), dp(14), dp(12))
         strokeColor = accent; strokeWidth = dp(1)
         setOnClickListener { onClick() }
         addView(LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             addView(TextView(context).apply {
-                this.text = title; textSize = 15f
+                this.text = title; textSize = 16f
                 setTextColor(color(R.color.text_primary))
                 typeface = android.graphics.Typeface.DEFAULT_BOLD
             })
             addView(TextView(context).apply {
-                this.text = text; textSize = 13f
+                this.text = text; textSize = 14f
                 setTextColor(color(R.color.text_secondary))
             })
         })
     }
 
     private fun header(s: String) = TextView(this).apply {
-        text = s; textSize = 16f
+        text = s; textSize = 18f
         setTextColor(color(R.color.text_primary))
         typeface = android.graphics.Typeface.DEFAULT_BOLD
-        setPadding(0, dp(18), 0, dp(4))
+        setPadding(dp(2), dp(20), 0, dp(4))
     }
 
     private fun body(s: String) = TextView(this).apply {
-        text = s; textSize = 13f
+        text = s; textSize = 14f
         setTextColor(color(R.color.text_secondary))
-        setPadding(0, dp(6), 0, 0)
+        setPadding(dp(2), dp(6), 0, 0)
     }
 
     private fun color(id: Int) = ContextCompat.getColor(this, id)

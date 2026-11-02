@@ -40,7 +40,7 @@ class MaintenanceActivity : AppCompatActivity() {
         val scroll = ScrollView(this).apply { setBackgroundColor(color(R.color.bg)) }
         body = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(dp(20), dp(12), dp(20), dp(28))
+            setPadding(dp(16), dp(8), dp(16), dp(28))
         }
         scroll.addView(body)
         setContentView(scroll)
@@ -61,15 +61,26 @@ class MaintenanceActivity : AppCompatActivity() {
         val book = Maintenance.load(this)
         val bike = BikeMemory.selected(this)
 
-        body.addView(text(getString(R.string.maint_title), 22f, R.color.text_primary, bold = true))
-        bike?.let { body.addView(text(it.name, 13f, R.color.brand_orange)) }
+        body.addView(header(getString(R.string.maint_title)))
+        bike?.let {
+            body.addView(text(it.name, 14f, R.color.brand_orange).apply {
+                setBackgroundResource(R.drawable.bg_scr_chip)
+                gravity = Gravity.CENTER_VERTICAL
+                minHeight = dp(48)
+                setPadding(dp(16), 0, dp(16), 0)
+                layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    .apply { topMargin = dp(8) }
+            })
+        }
 
         // Odometer.
         card { c ->
             c.addView(label(getString(R.string.maint_odometer)))
             val odo = book.odometer
-            c.addView(text(odo?.let { Maintenance.fmtKm(it) } ?: getString(R.string.maint_odometer_unset), if (odo != null) 30f else 15f,
-                R.color.text_primary, bold = odo != null, font = if (odo != null) R.font.archivo_black else null))
+            c.addView(text(odo?.let { Maintenance.fmtKm(it) } ?: getString(R.string.maint_odometer_unset), if (odo != null) 40f else 15f,
+                R.color.text_primary, bold = odo != null).apply {
+                if (odo != null) typeface = Typeface.create("sans-serif-condensed", Typeface.BOLD)
+            })
             c.addView(text(getString(R.string.maint_odometer_hint), 12f, R.color.text_secondary))
             c.addView(button(getString(R.string.maint_fix_km)) { askOdometer(book.odometer) })
         }
@@ -92,7 +103,9 @@ class MaintenanceActivity : AppCompatActivity() {
                         max = 100
                         progress = (s.fraction * 100).toInt()
                         setIndicatorColor(color(col))
-                        trackColor = color(R.color.surface_high)
+                        trackColor = color(R.color.outline)
+                        trackThickness = dp(10)
+                        trackCornerRadius = dp(5)
                         layoutParams = lp().apply { topMargin = dp(6) }
                     })
                 }
@@ -103,7 +116,7 @@ class MaintenanceActivity : AppCompatActivity() {
                 ))
             }
         }
-        body.addView(button(getString(R.string.maint_add_task)) { editTask(null, book) })
+        body.addView(button(getString(R.string.maint_add_task)) { editTask(null, book) }.apply { icon = androidx.core.content.ContextCompat.getDrawable(this@MaintenanceActivity, R.drawable.ic_scr_add) })
         body.addView(button(getString(R.string.maint_plan_125)) { askPlan125() })
 
         // Fuel.
@@ -125,14 +138,25 @@ class MaintenanceActivity : AppCompatActivity() {
         if (log.isNotEmpty()) {
             body.addView(section(getString(R.string.maint_history)))
             val df = DateFormat.getDateInstance(DateFormat.MEDIUM)
-            for (e in log) {
-                val what = when (e.kind) {
-                    "fuel" -> "⛽ " + String.format(Locale.getDefault(), "%.2f L", e.liters ?: 0.0) +
-                        (e.euros?.let { String.format(Locale.getDefault(), " · %.2f €", it) } ?: "")
-                    else -> "🔧 " + (book.tasks.firstOrNull { it.id == e.taskId }?.name ?: e.taskId.orEmpty()) +
-                        " · " + Maintenance.fmtKm(e.km)
+            card { c ->
+                for (e in log) {
+                    val what = when (e.kind) {
+                        "fuel" -> String.format(Locale.getDefault(), "%.2f L", e.liters ?: 0.0) +
+                            (e.euros?.let { String.format(Locale.getDefault(), " · %.2f €", it) } ?: "")
+                        else -> (book.tasks.firstOrNull { it.id == e.taskId }?.name ?: e.taskId.orEmpty()) +
+                            " · " + Maintenance.fmtKm(e.km)
+                    }
+                    c.addView(text("${df.format(Date(e.at))} — $what", 14f, R.color.text_secondary).apply {
+                        minHeight = dp(40)
+                        gravity = Gravity.CENTER_VERTICAL
+                        compoundDrawablePadding = dp(10)
+                        val ic = ContextCompat.getDrawable(this@MaintenanceActivity,
+                            if (e.kind == "fuel") R.drawable.ic_scr_fuel else R.drawable.ic_scr_wrench)?.mutate()
+                        ic?.setTint(color(R.color.brand_orange))
+                        ic?.setBounds(0, 0, dp(20), dp(20))
+                        setCompoundDrawables(ic, null, null, null)
+                    })
                 }
-                body.addView(text("${df.format(Date(e.at))} — $what", 13f, R.color.text_secondary))
             }
         }
     }
@@ -269,8 +293,8 @@ class MaintenanceActivity : AppCompatActivity() {
     private fun card(fill: (LinearLayout) -> Unit) {
         val c = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setBackgroundResource(R.drawable.bg_stat_tile)
-            setPadding(dp(16), dp(14), dp(16), dp(14))
+            setBackgroundResource(R.drawable.bg_scr_card)
+            setPadding(dp(14), dp(14), dp(14), dp(14))
             layoutParams = lp().apply { topMargin = dp(10) }
         }
         fill(c)
@@ -279,8 +303,24 @@ class MaintenanceActivity : AppCompatActivity() {
 
     private fun section(s: String) = label(s).apply { (layoutParams as LinearLayout.LayoutParams).topMargin = dp(22) }
 
-    private fun label(s: String) = text(s.uppercase(Locale.getDefault()), 12f, R.color.text_secondary).apply {
-        letterSpacing = 0.08f
+    private fun label(s: String) = text(s.uppercase(Locale.getDefault()), 13f, R.color.status_idle).apply {
+        letterSpacing = 0.04f
+    }
+
+    /** Back button + title (redesign header). */
+    private fun header(title: String) = LinearLayout(this).apply {
+        orientation = LinearLayout.HORIZONTAL
+        gravity = Gravity.CENTER_VERTICAL
+        minimumHeight = dp(56)
+        addView(android.widget.ImageButton(this@MaintenanceActivity).apply {
+            setBackgroundResource(R.drawable.bg_scr_back)
+            setImageResource(R.drawable.ic_scr_back)
+            setColorFilter(color(R.color.text_primary))
+            contentDescription = getString(R.string.scr_back)
+            setOnClickListener { finish() }
+        }, LinearLayout.LayoutParams(dp(48), dp(48)))
+        addView(text(title, 21f, R.color.text_primary, bold = true).apply { setPadding(dp(12), 0, 0, 0) },
+            LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
     }
 
     private fun text(s: String, size: Float, colorRes: Int, bold: Boolean = false, font: Int? = null) = TextView(this).apply {
@@ -299,6 +339,18 @@ class MaintenanceActivity : AppCompatActivity() {
             else com.google.android.material.R.attr.materialButtonOutlinedStyle,
         ).apply {
             text = s
+            minHeight = dp(48)
+            cornerRadius = dp(14)
+            insetTop = 0
+            insetBottom = 0
+            if (filled) {
+                backgroundTintList = android.content.res.ColorStateList.valueOf(color(R.color.brand_orange))
+                setTextColor(color(R.color.on_brand))
+            } else {
+                backgroundTintList = android.content.res.ColorStateList.valueOf(color(R.color.surface))
+                strokeColor = android.content.res.ColorStateList.valueOf(color(R.color.outline))
+                setTextColor(color(R.color.text_primary))
+            }
             setOnClickListener { onClick() }
             layoutParams = lp().apply { topMargin = dp(8) }
         }

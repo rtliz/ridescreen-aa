@@ -29,6 +29,7 @@ class CustomResolutionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_custom_resolution)
+        ScreenUi.bindBack(this)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.custom_res_root)) { v, insets ->
             val b = insets.getInsets(SafeInsets.BARS)
             v.setPadding(b.left, b.top, b.right, b.bottom)

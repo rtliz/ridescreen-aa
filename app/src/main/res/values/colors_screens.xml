@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="scr_bg2">#0E1114</color>
+    <color name="scr_amber_soft">#2A2112</color>
+    <color name="scr_hl_bg">#1D1A12</color>
+    <color name="scr_ok_text">#7FD48A</color>
+    <color name="scr_ok_bg">#10190F</color>
+    <color name="scr_ok_bg2">#143D20</color>
+    <color name="scr_ok_border">#1F6B35</color>
+    <color name="scr_bad_bg">#1A0F0F</color>
+    <color name="scr_bad_border">#7A1F1D</color>
+    <color name="scr_red_text">#FF6B66</color>
+    <color name="scr_red_fill">#C9231F</color>
+    <color name="scr_alarm_bg">#9D1A17</color>
+    <color name="scr_divider">#20272D</color>
+</resources>

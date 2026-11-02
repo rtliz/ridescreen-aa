@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:orientation="horizontal"
-    android:paddingVertical="12dp"
+    android:minHeight="56dp"
+    android:paddingVertical="8dp"
     android:gravity="center_vertical">
 
     <LinearLayout
@@ -39,9 +40,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:gravity="end"
-        android:textColor="@color/text_primary"
+        android:background="@drawable/bg_scr_icon"
+        android:gravity="center"
+        android:minHeight="40dp"
+        android:paddingHorizontal="12dp"
+        android:textColor="@color/brand_orange"
         android:textSize="14sp"
+        android:textStyle="bold"
         tools:text="Knob back"
         xmlns:tools="http://schemas.android.com/tools" />
 </LinearLayout>
