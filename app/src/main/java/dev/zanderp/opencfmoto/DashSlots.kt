@@ -174,8 +174,8 @@ class DashSlots(val k: DashKit) {
     /** Whole-screen speed int (-1 unknown) as every #11–#20 design shows and signs it. */
     fun speedInt(t: DashValues): Int = if (t.speedKmh.isNaN()) -1 else t.speedKmh.toInt().coerceIn(0, 999)
 
-    /** Fill [vis] with the visible extras and return how many of them fit the two corner slots. */
-    fun two(t: DashValues): Int = minOf(collect(t), 2)
+    /** Fill [vis] with the visible extras and return how many of them fit the four readout slots. */
+    fun four(t: DashValues): Int = minOf(collect(t), 4)
 
     /**
      * Small corner readout of extra [e]: an optional label (cut to fit), then value + unit. The clock

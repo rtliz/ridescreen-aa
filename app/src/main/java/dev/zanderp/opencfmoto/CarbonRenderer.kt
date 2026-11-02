@@ -151,9 +151,12 @@ class CarbonRenderer(context: Context, extras: Array<DashExtra>) : DashRenderer 
         c.drawCircle(0f, 0f, 9f, k.pFill)
         c.restore()
 
-        val n = sl.two(t)
+        val n = sl.four(t)
         if (n >= 1) sl.readout(c, pNum, k.extras[sl.vis[0]], t, 40f, 46f, 26f, 0, C_WHITE, C_UNIT, 300f)
         if (n >= 2) sl.readout(c, pNum, k.extras[sl.vis[1]], t, 984f, 46f, 26f, 2, C_WHITE, C_UNIT, 300f)
+        // Slots 3 and 4 (owner, 2 Nov 2026: room for more than two readouts).
+        if (n >= 3) sl.readout(c, pNum, k.extras[sl.vis[2]], t, 150f, 404f, 26f, 0, C_WHITE, C_UNIT, 300f)
+        if (n >= 4) sl.readout(c, pNum, k.extras[sl.vis[3]], t, 874f, 404f, 26f, 2, C_WHITE, C_UNIT, 300f)
         sl.end(c)
     }
 

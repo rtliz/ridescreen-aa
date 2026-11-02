@@ -125,9 +125,12 @@ class AirspeedRenderer(context: Context, extras: Array<DashExtra>) : DashRendere
 
         pNum.textSize = 24f; pNum.color = C_DIM; pNum.textAlign = Paint.Align.RIGHT
         c.drawText(DashSlots.UNIT, 990f, 404f, pNum)
-        val n = sl.two(t)
+        val n = sl.four(t)
         if (n >= 1) sl.readout(c, pNum, k.extras[sl.vis[0]], t, 56f, 404f, 24f, 0, C_WHITE, C_DIM, 260f)
         if (n >= 2) sl.readout(c, pNum, k.extras[sl.vis[1]], t, 56f, 370f, 24f, 0, C_WHITE, C_DIM, 260f)
+        // Slots 3 and 4 (owner, 2 Nov 2026: room for more than two readouts).
+        if (n >= 3) sl.readout(c, pNum, k.extras[sl.vis[2]], t, 944f, 370f, 24f, 2, C_WHITE, C_DIM, 260f)
+        if (n >= 4) sl.readout(c, pNum, k.extras[sl.vis[3]], t, 944f, 336f, 24f, 2, C_WHITE, C_DIM, 260f)
         sl.end(c)
     }
 

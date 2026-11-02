@@ -96,9 +96,12 @@ class SynthwaveRenderer(context: Context, extras: Array<DashExtra>) : DashRender
         c.drawText(DashSlots.UNIT, 512f, 322f, pMono)
         pMono.isFakeBoldText = false; pMono.letterSpacing = 0f
 
-        val n = sl.two(t)
+        val n = sl.four(t)
         if (n >= 1) sl.readout(c, pMono, k.extras[sl.vis[0]], t, 40f, 404f, 26f, 0, C_READ, C_READ, 420f)
         if (n >= 2) sl.readout(c, pMono, k.extras[sl.vis[1]], t, 984f, 404f, 26f, 2, C_READ, C_READ, 420f)
+        // Slots 3 and 4 (owner, 2 Nov 2026: room for more than two readouts).
+        if (n >= 3) sl.readout(c, pMono, k.extras[sl.vis[2]], t, 40f, 50f, 26f, 0, C_READ, C_READ, 420f)
+        if (n >= 4) sl.readout(c, pMono, k.extras[sl.vis[3]], t, 984f, 50f, 26f, 2, C_READ, C_READ, 420f)
         sl.end(c)
     }
 

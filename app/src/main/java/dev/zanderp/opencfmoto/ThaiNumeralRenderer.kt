@@ -79,9 +79,12 @@ class ThaiNumeralRenderer(context: Context, extras: Array<DashExtra>) : DashRend
         pSmall.textSize = 34f; pSmall.color = 0xFFFFEFC2.toInt()
         c.drawText(k.buf, 0, k.buf.length, 512f, 372f, pSmall)
 
-        val n = sl.two(t)
+        val n = sl.four(t)
         if (n >= 1) sl.readout(c, pSmall, k.extras[sl.vis[0]], t, 56f, 74f, 26f, 0, C_READ, C_GOLD, 330f)
         if (n >= 2) sl.readout(c, pSmall, k.extras[sl.vis[1]], t, 968f, 74f, 26f, 2, C_READ, C_GOLD, 330f)
+        // Slots 3 and 4 (owner, 2 Nov 2026: room for more than two readouts).
+        if (n >= 3) sl.readout(c, pSmall, k.extras[sl.vis[2]], t, 56f, 372f, 26f, 0, C_READ, C_GOLD, 330f)
+        if (n >= 4) sl.readout(c, pSmall, k.extras[sl.vis[3]], t, 968f, 372f, 26f, 2, C_READ, C_GOLD, 330f)
         sl.end(c)
     }
 

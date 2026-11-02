@@ -90,12 +90,15 @@ class NeonRingRenderer(context: Context, extras: Array<DashExtra>) : DashRendere
         c.drawText("0", 362f, 373f, pSmall)
         c.drawText("180", 662f, 373f, pSmall)
 
-        val n = sl.two(t)
+        val n = sl.four(t)
         if (n == 1) sl.readout(c, pSmall, k.extras[sl.vis[0]], t, 512f, 405f, 24f, 1, C_READ, C_SCALE, 300f)
-        else if (n == 2) {
+        else if (n >= 2) {
             sl.readout(c, pSmall, k.extras[sl.vis[0]], t, 496f, 405f, 24f, 2, C_READ, C_SCALE, 330f)
             sl.readout(c, pSmall, k.extras[sl.vis[1]], t, 528f, 405f, 24f, 0, C_READ, C_SCALE, 330f)
         }
+        // Slots 3 and 4 (owner, 2 Nov 2026: room for more than two readouts).
+        if (n >= 3) sl.readout(c, pSmall, k.extras[sl.vis[2]], t, 40f, 50f, 24f, 0, C_READ, C_SCALE, 260f)
+        if (n >= 4) sl.readout(c, pSmall, k.extras[sl.vis[3]], t, 984f, 50f, 24f, 2, C_READ, C_SCALE, 260f)
         sl.end(c)
     }
 

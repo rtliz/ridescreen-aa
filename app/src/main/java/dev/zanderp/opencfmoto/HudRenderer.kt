@@ -92,9 +92,12 @@ class HudRenderer(context: Context, extras: Array<DashExtra>) : DashRenderer {
         c.drawText("10", 706f, 138f, pMono)
         c.drawText("10", 706f, 304f, pMono)
 
-        val n = sl.two(t)
+        val n = sl.four(t)
         if (n >= 1) sl.readout(c, pMono, k.extras[sl.vis[0]], t, 640f, 60f, 26f, 0, C_GREEN, C_GREEN, 360f)
         if (n >= 2) sl.readout(c, pMono, k.extras[sl.vis[1]], t, 1004f, 404f, 26f, 2, C_GREEN, C_GREEN, 300f)
+        // Slots 3 and 4 (owner, 2 Nov 2026: room for more than two readouts).
+        if (n >= 3) sl.readout(c, pMono, k.extras[sl.vis[2]], t, 660f, 404f, 26f, 0, C_GREEN, C_GREEN, 250f)
+        if (n >= 4) sl.readout(c, pMono, k.extras[sl.vis[3]], t, 1004f, 60f, 26f, 2, C_GREEN, C_GREEN, 300f)
         sl.end(c)
     }
 

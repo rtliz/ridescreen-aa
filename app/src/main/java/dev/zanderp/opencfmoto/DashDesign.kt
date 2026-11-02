@@ -124,55 +124,55 @@ enum class DashDesign(
         ),
         { c, e -> InfoListRenderer(c, e) },
     ),
-    // #11–#20: speedometer only ("เรือนไมล์ล้วน"), up to two small corner readouts each.
+    // #11–#20: speedometer only ("เรือนไมล์ล้วน"), up to four small readouts each.
     NEON_RING(
         "speedo_11", 11, R.string.dash_design_11, null, 0f,
-        2, SPEEDO_EXTRAS, listOf(DashExtra.CLOCK),
+        4, SPEEDO_EXTRAS, listOf(DashExtra.CLOCK),
         { c, e -> NeonRingRenderer(c, e) },
     ),
     CARBON(
         "speedo_12", 12, R.string.dash_design_12, null, 0f,
-        2, SPEEDO_EXTRAS, emptyList(),
+        4, SPEEDO_EXTRAS, emptyList(),
         { c, e -> CarbonRenderer(c, e) },
     ),
     LCD_7SEG(
         "speedo_13", 13, R.string.dash_design_13, null, 0f,
-        2, SPEEDO_EXTRAS, listOf(DashExtra.CLOCK),
+        4, SPEEDO_EXTRAS, listOf(DashExtra.CLOCK),
         { c, e -> LcdRenderer(c, e) },
     ),
     HUD_JET(
         "speedo_14", 14, R.string.dash_design_14, null, 0f,
-        2, SPEEDO_EXTRAS, listOf(DashExtra.MAX_SPEED, DashExtra.CLOCK),
+        4, SPEEDO_EXTRAS, listOf(DashExtra.MAX_SPEED, DashExtra.CLOCK),
         { c, e -> HudRenderer(c, e) },
     ),
     SYNTHWAVE(
         "speedo_15", 15, R.string.dash_design_15, null, 0f,
-        2, SPEEDO_EXTRAS, listOf(DashExtra.CLOCK),
+        4, SPEEDO_EXTRAS, listOf(DashExtra.CLOCK),
         { c, e -> SynthwaveRenderer(c, e) },
     ),
     JP_SPORT(
         "speedo_16", 16, R.string.dash_design_16, null, 0f,
-        2, SPEEDO_EXTRAS, emptyList(),
+        4, SPEEDO_EXTRAS, emptyList(),
         { c, e -> JapanSportRenderer(c, e) },
     ),
     SWISS(
         "speedo_17", 17, R.string.dash_design_17, null, 0f,
-        2, SPEEDO_EXTRAS, listOf(DashExtra.CLOCK),
+        4, SPEEDO_EXTRAS, listOf(DashExtra.CLOCK),
         { c, e -> SwissRenderer(c, e) },
     ),
     AIRSPEED(
         "speedo_18", 18, R.string.dash_design_18, null, 0f,
-        2, SPEEDO_EXTRAS, emptyList(),
+        4, SPEEDO_EXTRAS, emptyList(),
         { c, e -> AirspeedRenderer(c, e) },
     ),
     LIQUID(
         "speedo_19", 19, R.string.dash_design_19, null, 0f,
-        2, SPEEDO_EXTRAS, emptyList(),
+        4, SPEEDO_EXTRAS, emptyList(),
         { c, e -> LiquidRenderer(c, e) },
     ),
     THAI_NUMERAL(
         "speedo_20", 20, R.string.dash_design_20, null, 0f,
-        2, SPEEDO_EXTRAS, emptyList(),
+        4, SPEEDO_EXTRAS, emptyList(),
         { c, e -> ThaiNumeralRenderer(c, e) },
     ),
     ;
@@ -218,7 +218,7 @@ private val OPTIONAL_EXTRAS = listOf(
     DashExtra.TYRES, DashExtra.COOLANT,
 )
 
-/** #11–#20: two corner readouts; the max speed comes first so #14 puts it top left. */
+/** #11–#20: up to four readouts; the max speed comes first so #14 puts it top left. */
 private val SPEEDO_EXTRAS = listOf(
     DashExtra.MAX_SPEED, DashExtra.CLOCK, DashExtra.TRIP_KM, DashExtra.RIDE_TIME,
     DashExtra.AVG_SPEED, DashExtra.ALTITUDE, DashExtra.HEADING, DashExtra.PHONE_BATTERY,

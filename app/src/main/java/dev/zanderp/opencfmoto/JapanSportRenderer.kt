@@ -66,9 +66,12 @@ class JapanSportRenderer(context: Context, extras: Array<DashExtra>) : DashRende
         pSmall.textAlign = Paint.Align.RIGHT
         c.drawText("180", 990f, 124f, pSmall)
 
-        val n = sl.two(t)
+        val n = sl.four(t)
         if (n >= 1) sl.readout(c, pSmall, k.extras[sl.vis[0]], t, 110f, 124f, 24f, 0, C_READ, C_SCALE, 330f)
         if (n >= 2) sl.readout(c, pSmall, k.extras[sl.vis[1]], t, 900f, 124f, 24f, 2, C_READ, C_SCALE, 330f)
+        // Slots 3 and 4 (owner, 2 Nov 2026: room for more than two readouts).
+        if (n >= 3) sl.readout(c, pSmall, k.extras[sl.vis[2]], t, 110f, 160f, 24f, 0, C_READ, C_SCALE, 250f)
+        if (n >= 4) sl.readout(c, pSmall, k.extras[sl.vis[3]], t, 900f, 160f, 24f, 2, C_READ, C_SCALE, 200f)
         sl.end(c)
     }
 

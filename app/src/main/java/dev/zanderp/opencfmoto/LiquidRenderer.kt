@@ -101,9 +101,12 @@ class LiquidRenderer(context: Context, extras: Array<DashExtra>) : DashRenderer 
             c.drawLine(722f, y, 744f, y, k.pStroke)
             c.drawText(AXIS[m], 752f, y + 7f, pNum)
         }
-        val n = sl.two(t)
+        val n = sl.four(t)
         if (n >= 1) sl.readout(c, pNum, k.extras[sl.vis[0]], t, 30f, 404f, 24f, 0, C_WHITE, C_AXIS, 270f)
         if (n >= 2) sl.readout(c, pNum, k.extras[sl.vis[1]], t, 994f, 404f, 24f, 2, C_WHITE, C_AXIS, 230f)
+        // Slots 3 and 4 (owner, 2 Nov 2026: room for more than two readouts).
+        if (n >= 3) sl.readout(c, pNum, k.extras[sl.vis[2]], t, 30f, 50f, 24f, 0, C_WHITE, C_AXIS, 270f)
+        if (n >= 4) sl.readout(c, pNum, k.extras[sl.vis[3]], t, 994f, 50f, 24f, 2, C_WHITE, C_AXIS, 230f)
         sl.end(c)
     }
 

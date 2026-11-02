@@ -90,9 +90,12 @@ class LcdRenderer(context: Context, extras: Array<DashExtra>) : DashRenderer {
         c.drawText(DashSlots.UNIT, 690f, 236f, pMono)
         pMono.letterSpacing = 0f
 
-        val n = sl.two(t)
+        val n = sl.four(t)
         if (n >= 1) sl.readout(c, pMono, k.extras[sl.vis[0]], t, 690f, 276f, 32f, 0, C_INK, C_INK, 270f)
         if (n >= 2) sl.readout(c, pMono, k.extras[sl.vis[1]], t, 690f, 312f, 32f, 0, C_INK, C_INK, 270f)
+        // Slots 3 and 4 (owner, 2 Nov 2026: room for more than two readouts).
+        if (n >= 3) sl.readout(c, pMono, k.extras[sl.vis[2]], t, 690f, 78f, 28f, 0, C_INK, C_INK, 270f)
+        if (n >= 4) sl.readout(c, pMono, k.extras[sl.vis[3]], t, 690f, 114f, 28f, 0, C_INK, C_INK, 270f)
 
         val lit = sl.litSegments(t.speedKmh, CELLS)
         for (i in 0 until CELLS) {
