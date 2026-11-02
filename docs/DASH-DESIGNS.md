@@ -12,6 +12,8 @@ The rider picks a bike screen in **Dash screen design** (`DashDesignActivity`, S
 | `DashExtra.kt` | `DashExtra` enum, `DashPrefs` (prefs file `ocm_dash`) and `DashExtraText` (labels, units, values, signature). |
 | `DashTelemetry.kt` | `DashValues` holds every displayable value. `DashTelemetry` is the live instance, refreshed by the LIVE view's tick. |
 | `Stock368Renderer.kt`, `FullMapRenderer.kt`, `ArrowMapRenderer.kt` | Designs #1–#3. |
+| `SpeedOnlyRenderer.kt`, `TripComputerRenderer.kt`, `SportRenderer.kt`, `NightRenderer.kt`, `TouringRenderer.kt`, `VintageRenderer.kt`, `InfoListRenderer.kt` | Designs #4–#10 (no map). |
+| `DashSlots.kt` | Helpers for #4–#10: themed number + unit drawing, status icons, speed segments. |
 
 Prefs: `opencfmoto_map/dash_layout` (AUTO / STANDARD / STOCK_368, by name, unchanged) and `opencfmoto_map/dash_design` (the `DashDesign.id`, default `stock_368`). `STOCK_368` is shown as "Custom" and means "use `dash_design`". AUTO uses it only on a Zontes 368 with a panel of at least 2.2:1. Picking a design switches STANDARD to STOCK_368 and leaves AUTO alone. Never store `ordinal`, and never rename an id.
 

@@ -72,13 +72,58 @@ enum class DashDesign(
         2, CORNER_EXTRAS, listOf(DashExtra.CLOCK),
         { c, e -> ArrowMapRenderer(c, e) },
     ),
-    SPEED_ONLY("speed_only", 4, R.string.dash_design_4, null, 0f, 0, emptyList(), emptyList(), null),
-    TRIP_COMPUTER("trip_computer", 5, R.string.dash_design_5, null, 0f, 0, emptyList(), emptyList(), null),
-    SPORT("sport", 6, R.string.dash_design_6, null, 0f, 0, emptyList(), emptyList(), null),
-    NIGHT("night", 7, R.string.dash_design_7, null, 0f, 0, emptyList(), emptyList(), null),
-    TOURING("touring", 8, R.string.dash_design_8, null, 0f, 0, emptyList(), emptyList(), null),
-    VINTAGE("vintage", 9, R.string.dash_design_9, null, 0f, 0, emptyList(), emptyList(), null),
-    INFO_LIST("info_list", 10, R.string.dash_design_10, null, 0f, 0, emptyList(), emptyList(), null),
+    /** #4: clock and status in the top row; the other extras join the right-hand group. */
+    SPEED_ONLY(
+        "speed_only", 4, R.string.dash_design_4, null, 0f,
+        3, ALL_EXTRAS_CLOCK_FIRST, listOf(DashExtra.CLOCK, DashExtra.PHONE_BATTERY),
+        { c, e -> SpeedOnlyRenderer(c, e) },
+    ),
+    /** #5: a 2×3 grid of tiles beside the speed card. */
+    TRIP_COMPUTER(
+        "trip_computer", 5, R.string.dash_design_5, null, 0f,
+        6, TRIP_EXTRAS,
+        listOf(
+            DashExtra.TRIP_KM, DashExtra.RIDE_TIME, DashExtra.MAX_SPEED,
+            DashExtra.CLOCK, DashExtra.ALTITUDE, DashExtra.ODOMETER,
+        ),
+        { c, e -> TripComputerRenderer(c, e) },
+    ),
+    /** #6: up to three slanted tiles on the right. */
+    SPORT(
+        "sport", 6, R.string.dash_design_6, null, 0f,
+        3, SPORT_EXTRAS, listOf(DashExtra.MAX_SPEED, DashExtra.RIDE_TIME, DashExtra.TRIP_KM),
+        { c, e -> SportRenderer(c, e) },
+    ),
+    /** #7: clock + battery top right, the rest as readouts bottom right. */
+    NIGHT(
+        "night", 7, R.string.dash_design_7, null, 0f,
+        4, NIGHT_EXTRAS,
+        listOf(DashExtra.PHONE_BATTERY, DashExtra.CLOCK, DashExtra.TRIP_KM, DashExtra.RIDE_TIME),
+        { c, e -> NightRenderer(c, e) },
+    ),
+    /** #8: rows under the route rows (arrival, minutes, km left) in the right column. */
+    TOURING(
+        "touring", 8, R.string.dash_design_8, null, 0f,
+        2, TOURING_EXTRAS, listOf(DashExtra.ALTITUDE),
+        { c, e -> TouringRenderer(c, e) },
+    ),
+    /** #9: panels on the right; the odometer is drawn as a footer line. */
+    VINTAGE(
+        "vintage", 9, R.string.dash_design_9, null, 0f,
+        4, VINTAGE_EXTRAS,
+        listOf(DashExtra.TRIP_KM, DashExtra.RIDE_TIME, DashExtra.MAX_SPEED, DashExtra.ODOMETER),
+        { c, e -> VintageRenderer(c, e) },
+    ),
+    /** #10: one list row per extra, after the speed row. */
+    INFO_LIST(
+        "info_list", 10, R.string.dash_design_10, null, 0f,
+        7, LIST_EXTRAS,
+        listOf(
+            DashExtra.TRIP_KM, DashExtra.RIDE_TIME, DashExtra.MAX_SPEED, DashExtra.CLOCK,
+            DashExtra.ALTITUDE, DashExtra.HEADING, DashExtra.PHONE_BATTERY,
+        ),
+        { c, e -> InfoListRenderer(c, e) },
+    ),
     // 11–20 ("เรือนไมล์ล้วน", speedometer only): use the ids in RESERVED_IDS, in order.
     ;
 
@@ -116,6 +161,54 @@ private val CORNER_EXTRAS = listOf(
     DashExtra.KM_SINCE_REFUEL, DashExtra.RANGE_EST, DashExtra.TYRES, DashExtra.COOLANT,
     DashExtra.PHONE_BATTERY, DashExtra.CLOCK,
 )
+
+/** The optional extras (fuel, tyres, coolant) that every non-map design lists last. */
+private val OPTIONAL_EXTRAS = listOf(
+    DashExtra.FUEL_ECONOMY, DashExtra.KM_SINCE_REFUEL, DashExtra.RANGE_EST,
+    DashExtra.TYRES, DashExtra.COOLANT,
+)
+
+private val ALL_EXTRAS_CLOCK_FIRST = listOf(
+    DashExtra.CLOCK, DashExtra.PHONE_BATTERY, DashExtra.TRIP_KM, DashExtra.RIDE_TIME,
+    DashExtra.MAX_SPEED, DashExtra.AVG_SPEED, DashExtra.ALTITUDE, DashExtra.HEADING,
+    DashExtra.ODOMETER,
+) + OPTIONAL_EXTRAS
+
+private val TRIP_EXTRAS = listOf(
+    DashExtra.TRIP_KM, DashExtra.RIDE_TIME, DashExtra.MAX_SPEED, DashExtra.CLOCK,
+    DashExtra.ALTITUDE, DashExtra.ODOMETER, DashExtra.AVG_SPEED, DashExtra.HEADING,
+    DashExtra.PHONE_BATTERY,
+) + OPTIONAL_EXTRAS
+
+private val SPORT_EXTRAS = listOf(
+    DashExtra.MAX_SPEED, DashExtra.RIDE_TIME, DashExtra.TRIP_KM, DashExtra.AVG_SPEED,
+    DashExtra.ALTITUDE, DashExtra.HEADING, DashExtra.ODOMETER, DashExtra.CLOCK,
+    DashExtra.PHONE_BATTERY,
+) + OPTIONAL_EXTRAS
+
+private val NIGHT_EXTRAS = listOf(
+    DashExtra.PHONE_BATTERY, DashExtra.CLOCK, DashExtra.TRIP_KM, DashExtra.RIDE_TIME,
+    DashExtra.MAX_SPEED, DashExtra.AVG_SPEED, DashExtra.ALTITUDE, DashExtra.HEADING,
+    DashExtra.ODOMETER,
+) + OPTIONAL_EXTRAS
+
+/** The compass already shows the heading, so #8 does not offer it as a row. */
+private val TOURING_EXTRAS = listOf(
+    DashExtra.ALTITUDE, DashExtra.TRIP_KM, DashExtra.RIDE_TIME, DashExtra.MAX_SPEED,
+    DashExtra.AVG_SPEED, DashExtra.CLOCK, DashExtra.PHONE_BATTERY, DashExtra.ODOMETER,
+) + OPTIONAL_EXTRAS
+
+/** The clock is a fixed dial in #9, so the CLOCK extra is not offered. */
+private val VINTAGE_EXTRAS = listOf(
+    DashExtra.TRIP_KM, DashExtra.RIDE_TIME, DashExtra.MAX_SPEED, DashExtra.ODOMETER,
+    DashExtra.AVG_SPEED, DashExtra.ALTITUDE, DashExtra.HEADING, DashExtra.PHONE_BATTERY,
+) + OPTIONAL_EXTRAS
+
+private val LIST_EXTRAS = listOf(
+    DashExtra.TRIP_KM, DashExtra.RIDE_TIME, DashExtra.MAX_SPEED, DashExtra.CLOCK,
+    DashExtra.ALTITUDE, DashExtra.HEADING, DashExtra.PHONE_BATTERY, DashExtra.AVG_SPEED,
+    DashExtra.ODOMETER,
+) + OPTIONAL_EXTRAS
 
 /** Fixed sample values for the picker previews (never shown on the bike). */
 object DashSamples {

@@ -674,6 +674,19 @@
     <string name="dash_design_9">Vintage dial</string>
     <string name="dash_design_10">Easy-read list</string>
     <string name="dash_sample_road">Rama 9 Rd</string>
+    <string name="dash_speed_now">Current speed</string>
+    <string name="dash_speed">Speed</string>
+    <string name="dash_remaining">Left</string>
+    <string-array name="dash_compass_names">
+        <item>North</item>
+        <item>Northeast</item>
+        <item>East</item>
+        <item>Southeast</item>
+        <item>South</item>
+        <item>Southwest</item>
+        <item>West</item>
+        <item>Northwest</item>
+    </string-array>
     <string name="dash_next">Next</string>
     <string name="dash_no_route">No route</string>
     <string name="dash_dir_left">turn left</string>

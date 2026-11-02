@@ -673,6 +673,19 @@
     <string name="dash_design_9">เข็มวินเทจ</string>
     <string name="dash_design_10">รายการอ่านง่าย</string>
     <string name="dash_sample_road">ถนนพระราม 9</string>
+    <string name="dash_speed_now">ความเร็วตอนนี้</string>
+    <string name="dash_speed">ความเร็ว</string>
+    <string name="dash_remaining">เหลือ</string>
+    <string-array name="dash_compass_names">
+        <item>ทิศเหนือ</item>
+        <item>ตะวันออกเฉียงเหนือ</item>
+        <item>ตะวันออก</item>
+        <item>ตะวันออกเฉียงใต้</item>
+        <item>ทิศใต้</item>
+        <item>ตะวันตกเฉียงใต้</item>
+        <item>ตะวันตก</item>
+        <item>ตะวันตกเฉียงเหนือ</item>
+    </string-array>
     <string name="dash_next">ถัดไป</string>
     <string name="dash_no_route">ไม่ได้นำทาง</string>
     <string name="dash_dir_left">เลี้ยวซ้าย</string>
