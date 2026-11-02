@@ -196,14 +196,15 @@ class DashDesignActivity : AppCompatActivity() {
             Toast.makeText(this, R.string.dash_design_coming_soon, Toast.LENGTH_SHORT).show()
             return
         }
+        // Tapping any design means "use my custom design": Auto only picks it when the bike reports a
+        // 368 at a wide resolution (and never in the phone preview), so riders saw the old screen.
+        if (MapPrefs.dashLayout(this) != DashLayout.STOCK_368) MapPrefs.setDashLayout(this, DashLayout.STOCK_368)
         val current = MapPrefs.dashDesign(this)
         if (current == d) {
             if (d.supportedExtras.isNotEmpty()) openOptions(d)
             return
         }
         MapPrefs.setDashDesign(this, d)
-        // Choosing a design means "use a custom design": leave Auto alone, switch Standard over.
-        if (MapPrefs.dashLayout(this) == DashLayout.STANDARD) MapPrefs.setDashLayout(this, DashLayout.STOCK_368)
         refresh()
         Toast.makeText(
             this,
