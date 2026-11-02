@@ -61,3 +61,8 @@ docs/**/*discord-ops*
 agent-tools/
 **/mcp.json
 
+
+# signing keys must never be committed
+*.jks
+*.keystore
+keystore.properties
