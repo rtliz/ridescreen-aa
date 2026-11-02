@@ -103,6 +103,9 @@
     <string name="home_tile_fuel">Petrol</string>
     <string name="home_tile_fuel_sub">SP95 nearby</string>
     <string name="home_tile_maint">Maintenance</string>
+    <string name="home_tile_dash">Bike screen</string>
+    <string name="home_tile_dash_sub_dash">Connect opens it · tap to change</string>
+    <string name="home_tile_dash_sub_aa">Connect opens Android Auto · tap to change</string>
     <string name="home_tile_tl">Traffic lights</string>
     <string name="home_tile_live">Live route</string>
     <string name="home_tile_live_on">Sharing now · tap to stop</string>

@@ -33,6 +33,25 @@
             android:textColor="@color/status_idle"
             android:textSize="13sp" />
 
+        <!-- What the home Connect button opens: the chosen design (default) or Android Auto. -->
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/dash_connect_opens_dash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:minHeight="56dp"
+            android:text="@string/dash_connect_opens_dash"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/dash_connect_opens_dash_desc"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
         <!-- Android Auto: information only, opens the connection settings, changes no pref. -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/dash_design_aa_card"

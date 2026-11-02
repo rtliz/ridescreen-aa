@@ -723,6 +723,8 @@
     <string name="dash_design_pick">Choose a screen</string>
     <string name="dash_design_aa_name">Android Auto (Google Maps)</string>
     <string name="dash_design_aa_desc">Uses Google\'s map and theme. Tap for connection settings.</string>
+    <string name="dash_connect_opens_dash">Connect opens my chosen screen</string>
+    <string name="dash_connect_opens_dash_desc">On: the home Connect button shows the design below on the bike. Off: Connect opens Android Auto (Google Maps).</string>
     <string name="dash_design_note">These designs are for the 368G screen and the app\'s own map. Android Auto uses Google\'s map and theme.</string>
     <string name="dash_design_applies_next">Applies the next time the map starts on the bike.</string>
     <string name="dash_design_coming_soon">Coming soon</string>

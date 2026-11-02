@@ -103,6 +103,9 @@
     <string name="home_tile_fuel">ปั๊มน้ำมัน</string>
     <string name="home_tile_fuel_sub">SP95 ใกล้ฉัน</string>
     <string name="home_tile_maint">บำรุงรักษา</string>
+    <string name="home_tile_dash">หน้าจอบนรถ</string>
+    <string name="home_tile_dash_sub_dash">กดเชื่อมต่อแล้วขึ้นแบบนี้ · แตะเพื่อเปลี่ยน</string>
+    <string name="home_tile_dash_sub_aa">กดเชื่อมต่อแล้วเปิด Android Auto · แตะเพื่อเปลี่ยน</string>
     <string name="home_tile_tl">ไฟจราจร</string>
     <string name="home_tile_live">เส้นทางสด</string>
     <string name="home_tile_live_on">กำลังแชร์ · แตะเพื่อหยุด</string>

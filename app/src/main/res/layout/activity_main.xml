@@ -622,6 +622,20 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <!-- Dash design shortcut: always visible, opens the on-bike screen picker. -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/btn_dash_design"
+                    style="@style/HomeRd.Tile"
+                    android:background="@drawable/bg_home_rd_tile_hl" />
+            </LinearLayout>
+
             <!-- Quick tiles (frame 1): trips, fuel, maintenance. Hidden while connected. -->
             <LinearLayout
                 android:id="@+id/home_rd_tiles_row"

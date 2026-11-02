@@ -722,6 +722,8 @@
     <string name="dash_design_pick">เลือกรูปแบบจอ</string>
     <string name="dash_design_aa_name">Android Auto (Google Maps)</string>
     <string name="dash_design_aa_desc">ใช้แผนที่และธีมของ Google · แตะเพื่อดูการตั้งค่าการเชื่อมต่อ</string>
+    <string name="dash_connect_opens_dash">กดเชื่อมต่อแล้วขึ้นหน้าจอที่เลือก</string>
+    <string name="dash_connect_opens_dash_desc">เปิด: ปุ่มเชื่อมต่อหน้าแรกจะแสดงแบบที่เลือกด้านล่างบนหน้าปัด · ปิด: ปุ่มเชื่อมต่อจะเปิด Android Auto (Google Maps)</string>
     <string name="dash_design_note">แบบเหล่านี้ใช้กับจอ 368G และแผนที่ของแอป · Android Auto ใช้แผนที่และธีมของ Google</string>
     <string name="dash_design_applies_next">มีผลเมื่อเริ่มแผนที่บนรถครั้งถัดไป</string>
     <string name="dash_design_coming_soon">เร็ว ๆ นี้</string>

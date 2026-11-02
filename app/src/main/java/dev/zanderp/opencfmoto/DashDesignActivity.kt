@@ -60,6 +60,10 @@ class DashDesignActivity : AppCompatActivity() {
             // Info only: show the existing connection / setup screen, change nothing here.
             if (intent.getBooleanExtra(EXTRA_FROM_SETUP, false)) finish() else SetupActivity.start(this)
         }
+        findViewById<MaterialSwitch>(R.id.dash_connect_opens_dash).apply {
+            isChecked = MapPrefs.connectOpensDash(this@DashDesignActivity)
+            setOnCheckedChangeListener { _, on -> MapPrefs.setConnectOpensDash(this@DashDesignActivity, on) }
+        }
         buildGrid()
 
         findViewById<MaterialButton>(R.id.dash_theme_auto).setOnClickListener { setMapTheme(MapTheme.AUTO) }

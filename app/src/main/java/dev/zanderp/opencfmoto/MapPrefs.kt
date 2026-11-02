@@ -49,6 +49,7 @@ object MapPrefs {
     private const val KEY_CIRCUIT_KM = "fun_circuit_km"
     private const val KEY_DASH_LAYOUT = "dash_layout"
     private const val KEY_DASH_DESIGN = "dash_design"
+    private const val KEY_CONNECT_DASH = "connect_opens_dash"
 
     private fun prefs(ctx: Context) =
         ctx.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -167,6 +168,13 @@ object MapPrefs {
 
     fun setDashDesign(ctx: Context, design: DashDesign) {
         prefs(ctx).edit().putString(KEY_DASH_DESIGN, design.id).apply()
+    }
+
+    /** Home Connect (saved bike) opens the app's own map with [dashDesign] instead of Android Auto. */
+    fun connectOpensDash(ctx: Context): Boolean = prefs(ctx).getBoolean(KEY_CONNECT_DASH, true)
+
+    fun setConnectOpensDash(ctx: Context, on: Boolean) {
+        prefs(ctx).edit().putBoolean(KEY_CONNECT_DASH, on).apply()
     }
 
     /**

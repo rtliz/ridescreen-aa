@@ -887,7 +887,9 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             val saved = BikeMemory.lastQr(this)
-            if (saved != null) {
+            if (saved != null && MapPrefs.connectOpensDash(this)) {
+                startDashFlow(saved)
+            } else if (saved != null) {
                 log("→ Connect: reusing saved bike '${BikeMemory.lastBikeName(this)}' (no scan needed)")
                 PxcHandshake.resetResyncBudget()
                 ProjectionHolder.projection = null
@@ -1085,6 +1087,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         Support.onResume(this)
         renderQuickDestinations()
+        tiles[R.id.btn_dash_design]?.let { it.sub.text = dashTileSub() }
         // Back from the app's permission page / Bluetooth / Wi‑Fi settings: carry on with Connect.
         if (pendingAaQr != null && dev.zanderp.opencfmoto.aa.AaSelfMode.canAttemptHur(this) &&
             WifiGate.isWifiEnabled(this)
@@ -1512,6 +1515,8 @@ class MainActivity : AppCompatActivity() {
         buildTile(R.id.btn_controls, R.drawable.ic_rs_gamepad, getString(R.string.controls_controls), getString(R.string.home_big_controls_sub))
         buildTile(R.id.btn_hud_view, R.drawable.ic_rs_monitor, getString(R.string.hud_dash_view), getString(R.string.home_big_hud_sub))
         buildTile(R.id.btn_trip, R.drawable.ic_rs_route, getString(R.string.home_big_trip), getString(R.string.home_big_trip_sub))
+        buildTile(R.id.btn_dash_design, R.drawable.ic_rs_monitor, getString(R.string.home_tile_dash), dashTileSub())
+        findViewById<View>(R.id.btn_dash_design)?.setOnClickListener { DashDesignActivity.start(this) }
         (findViewById<View>(R.id.parked_walk) as? MaterialButton)?.setIconResource(R.drawable.ic_rs_walk)
         (findViewById<View>(R.id.parked_view_photo) as? MaterialButton)?.setIconResource(R.drawable.ic_rs_photo)
         findViewById<View>(R.id.btn_traffic_lights)?.setOnClickListener { startActivity(Intent(this, TrafficLightsActivity::class.java)) }
@@ -1524,6 +1529,30 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.parked_view_photo)?.setOnClickListener {
             if (Parking.hasPhoto(this)) ParkingPhotoActivity.start(this) else takeParkingPhoto(thenStop = false)
         }
+    }
+
+    /** "<design name> · Connect opens it" (or "· Connect opens Android Auto"). */
+    private fun dashTileSub(): String =
+        getString(MapPrefs.dashDesign(this).labelRes) + " · " + getString(
+            if (MapPrefs.connectOpensDash(this)) R.string.home_tile_dash_sub_dash else R.string.home_tile_dash_sub_aa,
+        )
+
+    /** Connect straight into the app's own map with the chosen dash design (no Android Auto). */
+    private fun startDashFlow(qr: QrData) {
+        connectStartedAt = android.os.SystemClock.elapsedRealtime()
+        if (!WifiGate.ensureEnabledOrPrompt(this)) return
+        if (!ensureLocalNetworkForConnect()) return
+        log("→ Connect: '${BikeMemory.lastBikeName(this)}' → custom dash '${MapPrefs.dashDesign(this).id}' (no Android Auto)")
+        PxcHandshake.resetResyncBudget()
+        ensureLocationPermission()
+        ProjectionHolder.projection?.let { try { it.stop() } catch (_: Exception) {} }
+        ProjectionHolder.projection = null
+        GpxSession.prepareFreeRide()
+        // Same bike path as Map → Start ride (beginGpxProjection).
+        tearDownForModeSwitch(clearMap = false, clearMirror = true)
+        applyProfile(qr)
+        ConnectionState.set(Phase.MIRRORING, BikeMemory.lastBikeName(this) ?: qr.ssid)
+        joinWifi(qr, gateOnAaSteady = false)
     }
 
     /** Extra entries for ❓ Help: the bits that used to sit at the bottom of the home screen. */
