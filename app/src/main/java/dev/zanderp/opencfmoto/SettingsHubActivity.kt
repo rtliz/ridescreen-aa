@@ -53,6 +53,10 @@ class SettingsHubActivity : AppCompatActivity() {
         addRow(categories, getString(R.string.sr_bikes_title), getString(R.string.sr_bikes_sub), R.drawable.ic_set_bikes) {
             open("bikes", 0, 0, getString(R.string.sr_bikes_title))
         }
+        // The pre-redesign page: every section on one scroll, exactly as before the hub existed.
+        addRow(categories, getString(R.string.sr_classic_title), getString(R.string.sr_classic_sub), R.drawable.ic_set_advanced) {
+            SetupActivity.start(this)
+        }
 
         val search = findViewById<EditText>(R.id.hub_search)
         search.addTextChangedListener(object : TextWatcher {

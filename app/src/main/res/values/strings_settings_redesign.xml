@@ -5,6 +5,8 @@
     <string name="sr_no_results">No settings found</string>
     <string name="sr_bikes_sub">Confirmed and tested models</string>
     <string name="sr_bikes_title">Supported bikes</string>
+    <string name="sr_classic_title">Classic settings</string>
+    <string name="sr_classic_sub">The original page with every setting in one list</string>
     <string name="sr_back">Back</string>
     <string name="sr_h_map">MAP</string>
     <string name="sr_h_safety">SAFETY</string>

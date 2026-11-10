@@ -5,6 +5,8 @@
     <string name="sr_no_results">ไม่พบการตั้งค่าที่ค้นหา</string>
     <string name="sr_bikes_sub">ยืนยันแล้ว · ทดสอบแล้ว</string>
     <string name="sr_bikes_title">รุ่นรถที่รองรับ</string>
+    <string name="sr_classic_title">ตั้งค่าแบบเดิม</string>
+    <string name="sr_classic_sub">หน้าตั้งค่าแบบเก่า รวมทุกอย่างไว้หน้าเดียว</string>
     <string name="sr_back">ย้อนกลับ</string>
     <string name="sr_h_map">แผนที่</string>
     <string name="sr_h_safety">ความปลอดภัย</string>
