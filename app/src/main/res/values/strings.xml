@@ -663,6 +663,8 @@
     <string name="dash368_arrive">Arrive</string>
     <string name="dash368_unit_min">min</string>
     <!-- Choosable dash designs (DashDesign / DashExtra / DashDesignActivity) -->
+    <string name="dash_design_classic">Original (full map)</string>
+    <string name="dash_design_classic_sub">The map screen from before the custom designs</string>
     <string name="dash_design_1">Stock 368G</string>
     <string name="dash_design_2">Full map</string>
     <string name="dash_design_3">Big arrow + map</string>

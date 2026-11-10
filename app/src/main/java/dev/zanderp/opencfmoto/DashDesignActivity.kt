@@ -43,6 +43,7 @@ import com.google.android.material.materialswitch.MaterialSwitch
 class DashDesignActivity : AppCompatActivity() {
 
     private val cards = mutableListOf<Pair<DashDesign, MaterialCardView>>()
+    private lateinit var classicCard: MaterialCardView
     private val previews = mutableMapOf<DashDesign, DashDesignView>()
     private lateinit var sample: DashValues
 
@@ -80,7 +81,10 @@ class DashDesignActivity : AppCompatActivity() {
         val gap = dp(8)
         var row: LinearLayout? = null
         var n = 0   // cards in the current group
-        var first = true
+        // #0: the original full-screen map (DashLayout.STANDARD), one full-width card above the grid.
+        classicCard = makeClassicCard()
+        grid.addView(classicCard, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        var first = false
         for (d in DashDesign.entries) {
             if (d == DashDesign.NEON_RING) {
                 // Start of the speedometer-only group: finish the half-filled row, add a heading.
@@ -166,20 +170,7 @@ class DashDesignActivity : AppCompatActivity() {
             }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         }
         frame.addView(col)
-        val check = TextView(this).apply {
-            tag = TAG_CHECK
-            text = "✓"
-            gravity = Gravity.CENTER
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-            setTypeface(typeface, android.graphics.Typeface.BOLD)
-            setTextColor(ContextCompat.getColor(context, R.color.on_brand))
-            background = android.graphics.drawable.GradientDrawable().apply {
-                shape = android.graphics.drawable.GradientDrawable.OVAL
-                setColor(ContextCompat.getColor(context, R.color.brand_orange))
-            }
-            contentDescription = getString(R.string.dash_design_selected, getString(d.labelRes))
-        }
-        frame.addView(check, FrameLayout.LayoutParams(dp(24), dp(24), Gravity.BOTTOM or Gravity.END).also {
+        frame.addView(checkMark(getString(d.labelRes)), FrameLayout.LayoutParams(dp(24), dp(24), Gravity.BOTTOM or Gravity.END).also {
             it.setMargins(0, 0, dp(8), dp(8))
         })
         card.addView(frame)
@@ -187,9 +178,67 @@ class DashDesignActivity : AppCompatActivity() {
         return card
     }
 
-    private fun numberedName(d: DashDesign): CharSequence {
-        val num = d.number.toString()
-        val sb = SpannableStringBuilder(num).append("  ").append(getString(d.labelRes))
+    private fun makeClassicCard(): MaterialCardView {
+        val card = MaterialCardView(this).apply {
+            radius = dp(14).toFloat()
+            cardElevation = 0f
+            strokeWidth = dp(1.5f)
+            isClickable = true
+            isFocusable = true
+        }
+        val frame = FrameLayout(this)
+        val col = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(8), dp(8), dp(8), dp(8))
+        }
+        col.addView(ClassicPreviewView(this), LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        col.addView(TextView(this).apply {
+            text = numberedName(0, getString(R.string.dash_design_classic))
+            setTextColor(ContextCompat.getColor(context, R.color.text_primary))
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+        }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).also {
+            it.topMargin = dp(8)
+        })
+        col.addView(smallText(getString(R.string.dash_design_classic_sub), R.color.text_secondary))
+        frame.addView(col)
+        frame.addView(checkMark(getString(R.string.dash_design_classic)), FrameLayout.LayoutParams(dp(24), dp(24), Gravity.BOTTOM or Gravity.END).also {
+            it.setMargins(0, 0, dp(8), dp(8))
+        })
+        card.addView(frame)
+        card.setOnClickListener { onClassicTapped() }
+        return card
+    }
+
+    private fun onClassicTapped() {
+        if (MapPrefs.dashLayout(this) == DashLayout.STANDARD) return
+        MapPrefs.setDashLayout(this, DashLayout.STANDARD)
+        refresh()
+        Toast.makeText(
+            this,
+            getString(R.string.dash_design_selected, getString(R.string.dash_design_classic)) + " · " + getString(R.string.dash_design_applies_next),
+            Toast.LENGTH_SHORT,
+        ).show()
+    }
+
+    private fun checkMark(label: String) = TextView(this).apply {
+        tag = TAG_CHECK
+        text = "✓"
+        gravity = Gravity.CENTER
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+        setTypeface(typeface, android.graphics.Typeface.BOLD)
+        setTextColor(ContextCompat.getColor(context, R.color.on_brand))
+        background = android.graphics.drawable.GradientDrawable().apply {
+            shape = android.graphics.drawable.GradientDrawable.OVAL
+            setColor(ContextCompat.getColor(context, R.color.brand_orange))
+        }
+        contentDescription = getString(R.string.dash_design_selected, label)
+    }
+
+    private fun numberedName(d: DashDesign): CharSequence = numberedName(d.number, getString(d.labelRes))
+
+    private fun numberedName(number: Int, label: String): CharSequence {
+        val num = number.toString()
+        val sb = SpannableStringBuilder(num).append("  ").append(label)
         sb.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, R.color.brand_orange)), 0, num.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         sb.setSpan(StyleSpan(android.graphics.Typeface.BOLD), 0, num.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         return sb
@@ -345,16 +394,19 @@ class DashDesignActivity : AppCompatActivity() {
     }
 
     private fun refresh() {
-        val selected = MapPrefs.dashDesign(this)
+        // Mark what the bike will actually show: AUTO on a non-368 dash means the original map too.
+        val classic = !MapPrefs.useStock368(this, 1024, 425)
+        val selected = if (classic) null else MapPrefs.dashDesign(this)
         val amber = ContextCompat.getColor(this, R.color.brand_orange)
         val outline = ContextCompat.getColor(this, R.color.outline)
         val surface = ContextCompat.getColor(this, R.color.surface)
-        for ((d, card) in cards) {
-            val on = d == selected
+        fun mark(card: MaterialCardView, on: Boolean) {
             card.strokeColor = if (on) amber else outline
             card.setCardBackgroundColor(if (on) SELECTED_BG else surface)
             card.findViewWithTag<View>(TAG_CHECK)?.visibility = if (on) View.VISIBLE else View.GONE
         }
+        mark(classicCard, classic)
+        for ((d, card) in cards) mark(card, d == selected)
         highlight(
             NightPrefs.theme(this),
             R.id.dash_theme_auto to MapTheme.AUTO,
@@ -445,5 +497,49 @@ class AaPreviewView @JvmOverloads constructor(context: Context, attrs: Attribute
         c.drawRoundRect(16f * k, 16f * k, 380f * k, 130f * k, 14f * k, 14f * k, p)
         p.color = 0xFF111822.toInt()
         c.drawRoundRect(16f * k, h - 100f * k, 560f * k, h - 16f * k, 14f * k, 14f * k, p)
+    }
+}
+
+/**
+ * Picker preview of the original full-screen map (#0, [DashLayout.STANDARD]): dark map edge to
+ * edge, route, turn banner top left and a round speed badge bottom left. Static; it shows no data.
+ */
+class ClassicPreviewView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
+    private val p = Paint(Paint.ANTI_ALIAS_FLAG)
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val w = MeasureSpec.getSize(widthMeasureSpec)
+        setMeasuredDimension(w, Math.round(w * 425f / 1024f))
+    }
+
+    override fun onDraw(c: Canvas) {
+        val w = width.toFloat()
+        val h = height.toFloat()
+        val k = w / 1024f
+        p.style = Paint.Style.FILL
+        p.color = 0xFF1B242C.toInt()
+        c.drawRect(0f, 0f, w, h, p)
+        p.style = Paint.Style.STROKE
+        p.strokeCap = Paint.Cap.ROUND
+        p.color = 0xFF2E3B46.toInt()
+        p.strokeWidth = 16f * k
+        c.drawLine(0f, h * 0.35f, w, h * 0.42f, p)
+        c.drawLine(w * 0.3f, 0f, w * 0.38f, h, p)
+        c.drawLine(w * 0.7f, 0f, w * 0.64f, h, p)
+        p.color = 0xFFD1A955.toInt()
+        p.strokeWidth = 12f * k
+        c.drawLine(w * 0.38f, h, w * 0.35f, h * 0.38f, p)
+        c.drawLine(w * 0.35f, h * 0.38f, w, h * 0.42f, p)
+        p.style = Paint.Style.FILL
+        p.color = 0xE6111822.toInt()
+        c.drawRoundRect(16f * k, 16f * k, 340f * k, 110f * k, 14f * k, 14f * k, p)
+        c.drawCircle(95f * k, h - 95f * k, 75f * k, p)
+        p.color = 0xFFD1A955.toInt()
+        c.drawRect(36f * k, 40f * k, 96f * k, 86f * k, p)
+        p.color = 0xFFFFFFFF.toInt()
+        p.textAlign = Paint.Align.CENTER
+        p.textSize = 64f * k
+        p.isFakeBoldText = true
+        c.drawText("42", 95f * k, h - 75f * k, p)
     }
 }

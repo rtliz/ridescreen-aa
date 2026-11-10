@@ -662,6 +662,8 @@
     <string name="dash368_arrive">ถึง</string>
     <string name="dash368_unit_min">นาที</string>
     <!-- Choosable dash designs (DashDesign / DashExtra / DashDesignActivity) -->
+    <string name="dash_design_classic">แบบเดิม (แผนที่เต็มจอ)</string>
+    <string name="dash_design_classic_sub">หน้าจอแผนที่แบบที่ใช้ก่อนมีหน้าจอแบบใหม่</string>
     <string name="dash_design_1">สต็อก 368G</string>
     <string name="dash_design_2">แผนที่เต็มจอ</string>
     <string name="dash_design_3">ลูกศรใหญ่ + แผนที่</string>
